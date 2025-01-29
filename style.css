@@ -8,7 +8,8 @@
 .container{
     width: 100%;
     min-height: 100vh;
-    background: gray;
+    background: rgb(141,220,252);
+    background: linear-gradient(109deg, rgba(141,220,252,1) 0%, rgba(92,188,255,1) 21%, rgba(44,121,250,1) 48%, rgba(6,120,238,1) 76%);
     padding: 10px
 }
 
@@ -51,17 +52,21 @@ button {
     border: none;
     outline: none;
     padding: 16px 30px;
-    background: #ff5945;
+    background: #226ff5;
     color: #fff;
     font-size: 16px;
     cursor: pointer;
     border-radius: 40px;
 }
 
+button:hover {
+    background: #0944db;
+}
+
 ul li {
     list-style: none;
     font-size: 17px;
-    padding: 12px 8px 12px 50px;
+    padding: 12px 50px 12px 50px;
     user-select: none;
     cursor: pointer;
     position: relative;
@@ -104,4 +109,13 @@ ul li span {
 
 ul li span:hover {
     background: #edeef0;
+}
+
+.edit-input {
+    font-size: 16px;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 0px 5px;
+    color: #555555;
 }
