@@ -14,7 +14,7 @@ function addTask() {
     else {
         let li = document.createElement("li");
         li.innerHTML = inputBox.value;
-        listContainer.appendChild(li)
+        listContainer.appendChild(li);
         let span = document.createElement("span");
         span.innerHTML = "\u00d7";
         li.appendChild(span);
@@ -24,17 +24,33 @@ function addTask() {
 }
 
 listContainer.addEventListener("click", function(e) {
-    if(e.target.tagName === "LI"){
-        editTask(e.target);
-    } else if (e.target.tagName === "SPAN") {
+    const li = e.target.closest('li');
+    if (!li) return;
+
+    const rect = li.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+
+    if (clickX < 35) {
+        li.classList.toggle("checked");
+        saveData();
+        return;
+    }
+
+    if (e.target.tagName === "SPAN") {
         e.target.parentElement.remove();
         saveData();
+        return;
+    }
+
+    if (clickX >= 35 && e.target.tagName === "LI") {
+        editTask(e.target);
     }
 });
 
 function editTask(li) {
     if (li.classList.contains("editing")) return;
 
+    const span = li.querySelector("span");
     const currentText = li.firstChild.textContent.trim();
     const input = document.createElement("input");
     input.type = "text";
@@ -44,20 +60,21 @@ function editTask(li) {
 
     li.innerHTML = '';
     li.appendChild(input);
+    li.appendChild(span);
     input.focus();
 
     function saveEdit() {
-        li.innerHTML = '';
-        li.textContent = input.value.trim() || currentText; 
-        let span = document.createElement("span");
-        span.innerHTML = "\u00d7";
+        const newText = input.value.trim() || currentText;
+        li.innerHTML = newText;
         li.appendChild(span);
         li.classList.remove("editing");
         saveData();
     }
 
     input.addEventListener("keydown", function(event) {
-        if (event.key === "Enter") saveEdit();
+        if (event.key === "Enter") {
+            saveEdit();
+        }
     });
 
     input.addEventListener("blur", saveEdit);
@@ -70,4 +87,4 @@ function saveData(){
 function showTaskData(){
     listContainer.innerHTML = localStorage.getItem("data");
 }
-showTaskData()
+showTaskData();
