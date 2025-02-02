@@ -1,3 +1,51 @@
+document.addEventListener('DOMContentLoaded', (event) => {
+    const savedName = localStorage.getItem('userName');
+    const userNameElement = document.getElementById('user-name');
+    if (savedName && savedName !== '{insert your name}') {
+        userNameElement.innerText = savedName;
+        userNameElement.style.color = 'inherit';
+        userNameElement.style.fontStyle = 'normal';
+        userNameElement.style.fontWeight = 'normal';
+    } else {
+        userNameElement.innerText = '{insert your name}';
+        userNameElement.style.color = 'gray';
+        userNameElement.style.fontStyle = 'italic';
+    }
+
+    userNameElement.addEventListener('focus', function() {
+        if (userNameElement.innerText === '{insert your name}') {
+            userNameElement.innerText = '';
+            userNameElement.style.color = 'inherit';
+            userNameElement.style.fontStyle = 'normal';
+            userNameElement.style.fontWeight = 'normal';
+        }
+    });
+
+    userNameElement.addEventListener('blur', function() {
+        saveName(userNameElement);
+    });
+
+    userNameElement.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            userNameElement.blur();
+        }
+    });
+});
+
+function saveName(element) {
+    const name = element.innerText.trim();
+    if (name === '' || name === '{insert your name}') {
+        element.innerText = '{insert your name}';
+        element.style.color = 'gray';
+        element.style.fontStyle = 'italic';
+    } else {
+        element.style.color = 'inherit';
+        element.style.fontStyle = 'normal';
+    }
+    localStorage.setItem('userName', element.innerText);
+}
+
 const inputBox = document.getElementById('input-box');
 const listContainer = document.getElementById('list-container');
 
