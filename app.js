@@ -32,6 +32,29 @@ document.addEventListener('DOMContentLoaded', (event) => {
             userNameElement.blur();
         }
     });
+
+    const savedTitle = localStorage.getItem('headerTitle');
+    const headerTitleElement = document.getElementById('header-title');
+    if (savedTitle) {
+        headerTitleElement.innerText = savedTitle;
+    }
+
+    headerTitleElement.addEventListener('blur', function() {
+        const title = this.innerText.trim();
+        if (title !== '') {
+            localStorage.setItem('headerTitle', title);
+        } else {
+            this.innerText = 'To-Do List';
+            localStorage.setItem('headerTitle', 'To-Do List');
+        }
+    });
+
+    headerTitleElement.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.blur();
+        }
+    });
 });
 
 function saveName(element) {
