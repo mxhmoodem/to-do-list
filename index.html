@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To Do List</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+    <div class="welcome-section">
+        <span>Welcome back, <span id="user-name" contenteditable="true" onblur="saveName(this)"></span></span>
+    </div>
     <div class="container">
         <div class="todo-app">
             <h2>To-Do List</h2>
@@ -16,9 +19,7 @@
                 <button onclick="addTask()">Add Task</button>
             </div>
             <ul id="list-container">
-                <!-- 
-                <li class="checked">Task x</li>
-                -->
+                <!-- List items will be added here -->
             </ul>
         </div>
     </div>
