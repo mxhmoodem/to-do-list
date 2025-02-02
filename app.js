@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         userNameElement.innerText = '{insert your name}';
         userNameElement.style.color = 'gray';
         userNameElement.style.fontStyle = 'italic';
+        userNameElement.style.fontWeight = 'normal';
     }
 
     userNameElement.addEventListener('focus', function() {
