@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', (event) => {
+
     const savedName = localStorage.getItem('userName');
     const userNameElement = document.getElementById('user-name');
+    const savedTitle = localStorage.getItem('headerTitle');
+    const headerTitleElement = document.getElementById('header-title');
+
     if (savedName && savedName !== '{insert your name}') {
         userNameElement.innerText = savedName;
         userNameElement.style.color = 'inherit';
@@ -33,8 +37,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     });
 
-    const savedTitle = localStorage.getItem('headerTitle');
-    const headerTitleElement = document.getElementById('header-title');
     if (savedTitle) {
         headerTitleElement.innerText = savedTitle;
     }
@@ -55,6 +57,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
             this.blur();
         }
     });
+
+    displayCurrentDate();
 });
 
 function saveName(element) {
@@ -68,6 +72,17 @@ function saveName(element) {
         element.style.fontStyle = 'normal';
     }
     localStorage.setItem('userName', element.innerText);
+}
+
+function displayCurrentDate() {
+    const dateElement = document.getElementById('current-date');
+    const today = new Date();
+    const dateString = today.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    dateElement.textContent = dateString;
 }
 
 const inputBox = document.getElementById('input-box');
