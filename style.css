@@ -5,11 +5,28 @@
     font-family: 'Poppins', sans-serif;
 }
 
+body {
+    background: rgb(141,220,252);
+    background: linear-gradient(109deg, rgba(141,220,252,1) 0%, rgba(92,188,255,1) 21%, rgba(44,121,250,1) 48%, rgba(6,120,238,1) 76%);
+}
+
+.welcome-section {
+    padding: 30px 0px 0px 30px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#user-name {
+    display: inline-block;
+    border: none;
+    outline: none;
+    color: gray;
+    font-style: italic;
+}
+
 .container{
     width: 100%;
     min-height: 100vh;
-    background: rgb(141,220,252);
-    background: linear-gradient(109deg, rgba(141,220,252,1) 0%, rgba(92,188,255,1) 21%, rgba(44,121,250,1) 48%, rgba(6,120,238,1) 76%);
     padding: 10px
 }
 
@@ -20,6 +37,7 @@
     margin: 100px auto 20px;
     padding: 40px 30px 70px;
     border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgb(104, 104, 104);
 }
 
 .todo-app h2{
