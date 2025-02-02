@@ -11,7 +11,10 @@ body {
 }
 
 .welcome-section {
-    padding: 30px 0px 0px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 30px 0px 30px;
     font-size: 28px;
     font-weight: bold;
 }
@@ -22,6 +25,15 @@ body {
     outline: none;
     color: gray;
     font-style: italic;
+}
+
+#current-date {
+    font-size: 20px;
+    font-weight: normal;
+    color: #ffffff;   
+    background: rgba(0,0,0,0.1);
+    padding: 5px 10px;  
+    border-radius: 5px;
 }
 
 .container{
