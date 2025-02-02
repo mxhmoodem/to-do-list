@@ -30,6 +30,14 @@ body {
     padding: 10px
 }
 
+#header-title {
+    color: #002765;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    outline: none;
+}
+
 .todo-app {
     width: 100%;
     max-width: 540px;
