@@ -6,8 +6,7 @@
 }
 
 body {
-    background: rgb(141,220,252);
-    background: linear-gradient(109deg, rgba(141,220,252,1) 0%, rgba(92,188,255,1) 21%, rgba(44,121,250,1) 48%, rgba(6,120,238,1) 76%);
+    background-color: #f8fafd;
 }
 
 .welcome-section {
@@ -31,7 +30,7 @@ body {
     font-size: 20px;
     font-weight: normal;
     color: #ffffff;   
-    background: rgba(0,0,0,0.1);
+    background: rgba(0,0,0,0.2);
     padding: 5px 10px;  
     border-radius: 5px;
 }
@@ -44,7 +43,7 @@ body {
 
 #header-title {
     color: #002765;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
     outline: none;
@@ -57,7 +56,7 @@ body {
     margin: 100px auto 20px;
     padding: 40px 30px 70px;
     border-radius: 10px;
-    box-shadow: 0 0 10px 0 rgb(104, 104, 104);
+    box-shadow: 0 0 10px 0px rgb(209, 209, 209);
 }
 
 .todo-app h2{
@@ -103,7 +102,7 @@ button:hover {
 
 ul li {
     list-style: none;
-    font-size: 17px;
+    font-size: 16px;
     padding: 12px 50px 12px 50px;
     user-select: none;
     cursor: pointer;
