@@ -105,6 +105,10 @@ function addTask() {
         let span = document.createElement("span");
         span.innerHTML = "\u00d7";
         li.appendChild(span);
+
+        li.setAttribute('draggable', 'true');
+        addDragAndDropHandlers(li);
+
     }
     inputBox.value = '';
     saveData();
@@ -155,6 +159,10 @@ function editTask(li) {
         li.innerHTML = newText;
         li.appendChild(span);
         li.classList.remove("editing");
+
+        li.setAttribute('draggable', 'true');
+        addDragAndDropHandlers(li);
+
         saveData();
     }
 
@@ -167,11 +175,66 @@ function editTask(li) {
     input.addEventListener("blur", saveEdit);
 }
 
+let dragSrcEl = null;
+
+function handleDragStart(e) {
+    dragSrcEl = this;
+    e.dataTransfer.effectAllowed = 'move';
+    this.classList.add('dragging');
+    
+}
+
+function handleDragOver(e) {
+    if (e.preventDefault) {
+        e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+}
+
+function handleDrop(e) {
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+    if (dragSrcEl !== this) {
+        const list = this.parentNode;
+        const nodes = Array.from(list.children);
+        const dragIndex = nodes.indexOf(dragSrcEl);
+        const dropIndex = nodes.indexOf(this);
+
+        if (dragIndex < dropIndex) {
+            list.insertBefore(dragSrcEl, this.nextSibling);
+        } else {
+            list.insertBefore(dragSrcEl, this);
+        }
+        saveData();
+    }
+    return false;
+}
+
+function handleDragEnd(e) {
+    this.classList.remove('dragging');
+}
+
+function addDragAndDropHandlers(li) {
+    li.setAttribute('draggable', 'true');
+    li.addEventListener('dragstart', handleDragStart, false);
+    li.addEventListener('dragover', handleDragOver, false);
+    li.addEventListener('drop', handleDrop, false);
+    li.addEventListener('dragend', handleDragEnd, false);
+}
+
+
 function saveData(){
     localStorage.setItem("data", listContainer.innerHTML);
 }
 
-function showTaskData(){
-    listContainer.innerHTML = localStorage.getItem("data");
+function showTaskData() {
+    listContainer.innerHTML = localStorage.getItem("data") || '';
+    const listItems = listContainer.querySelectorAll('li');
+    listItems.forEach(li => {
+        li.setAttribute('draggable', 'true');
+        addDragAndDropHandlers(li);
+    });
 }
 showTaskData();
