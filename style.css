@@ -70,6 +70,7 @@
     border-radius: 40px;
     width: 120px;
     box-shadow: 0 0 4px 0px rgba(59, 59, 59, 0.749);
+    visibility: hidden; /* Remove when functionality added to the button */
   }
 
   .create-list-btn span{
