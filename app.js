@@ -253,9 +253,9 @@ function showTaskData() {
   });
 }
 
-// =========================================
+// ========================================
 //        CREATE A NEW (ADDITIONAL) LIST
-// =========================================
+// ========================================
 function createList() {
   const newTodoApp = document.createElement('div');
   newTodoApp.classList.add('todo-app');
