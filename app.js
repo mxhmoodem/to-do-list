@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
   });
 
+  updateContainerCloseButtons();
   displayCurrentDate();
   showTaskData(); 
 });
@@ -253,17 +254,33 @@ function showTaskData() {
   });
 }
 
-// ========================================
+// =========================================
 //        CREATE A NEW (ADDITIONAL) LIST
-// ========================================
+// =========================================
 function createList() {
   const newTodoApp = document.createElement('div');
   newTodoApp.classList.add('todo-app');
+
+  const headerRow = document.createElement('div');
+  headerRow.classList.add('header-row');
 
   const newTitle = document.createElement('h2');
   newTitle.contentEditable = 'true';
   newTitle.innerText = 'New To-Do List'; 
   newTitle.classList.add('header-title'); 
+
+  const closeBtn = document.createElement('span');
+  closeBtn.innerHTML = "\u00D7";
+  closeBtn.classList.add('close-container');
+  closeBtn.addEventListener('click', () => {
+    newTodoApp.remove();
+    updateContainerCloseButtons();
+  });
+
+  headerRow.appendChild(newTitle);
+  headerRow.appendChild(closeBtn);
+
+  newTodoApp.appendChild(headerRow);
 
   const rowDiv = document.createElement('div');
   rowDiv.classList.add('row');
@@ -275,12 +292,11 @@ function createList() {
   const addButton = document.createElement('button');
   addButton.innerText = 'Add Task';
 
-  const newUl = document.createElement('ul');
-
   rowDiv.appendChild(newInput);
   rowDiv.appendChild(addButton);
 
-  newTodoApp.appendChild(newTitle);
+  const newUl = document.createElement('ul');
+
   newTodoApp.appendChild(rowDiv);
   newTodoApp.appendChild(newUl);
 
@@ -288,15 +304,16 @@ function createList() {
   container.appendChild(newTodoApp);
 
   addButton.addEventListener('click', () => addTaskToList(newInput, newUl));
-  newInput.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
+  newInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
       addTaskToList(newInput, newUl);
     }
   });
-
-  newUl.addEventListener('click', function(e) {
+  newUl.addEventListener('click', (e) => {
     handleListClick(e, newUl);
   });
+
+  updateContainerCloseButtons();
 }
 
 function addTaskToList(inputElem, ulElem) {
@@ -370,4 +387,22 @@ function editTaskInNewList(li, ulElem) {
   });
 
   input.addEventListener("blur", saveEdit);
+}
+
+function updateContainerCloseButtons() {
+  const apps = document.querySelectorAll('.todo-app');
+  if (apps.length === 1) {
+    const onlyApp = apps[0];
+    const closeBtn = onlyApp.querySelector('.close-container');
+    if (closeBtn) {
+      closeBtn.style.display = 'none';
+    }
+  } else {
+    apps.forEach(app => {
+      const closeBtn = app.querySelector('.close-container');
+      if (closeBtn) {
+        closeBtn.style.display = 'inline-block';
+      }
+    });
+  }
 }
