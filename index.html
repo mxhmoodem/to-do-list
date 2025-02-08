@@ -42,7 +42,10 @@
       <div class="todo-app">
         <div class="header-row">
           <h2 id="header-title" contenteditable="True">To-Do List</h2>
-          <span class="close-container" onclick="removeList(this)">&#x00D7;</span>
+          <div class="close-container-wrapper">
+            <span class="close-container" onclick="removeList(this)">&#x00D7;</span>
+            <span class="tooltiptext">Delete List</span>
+          </div>
         </div>
         <div class="row">
           <input type="text" id="input-box" placeholder="Add a new task" />
