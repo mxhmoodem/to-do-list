@@ -139,7 +139,6 @@ body {
   color: #002765;
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 20px;
   outline: none;
 }
 
@@ -278,14 +277,30 @@ ul li span:hover {
   position: relative;
   margin-bottom: 20px;     
   min-height: 40px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
 .header-row h2 {
   margin: 0;        
-  padding: 5px 30px 5px 0;        
+  padding: 5px 40px 0 0;        
   line-height: 1.5; 
   word-wrap: break-word;
   overflow-wrap: break-word;
+  flex: 1;
+}
+
+.header-row h2:focus,
+.header-row h2:focus-visible {
+  outline: none;
+  box-shadow: none; 
+  border: none;
+}
+
+.close-container-wrapper {
+  position: relative;
+  display: inline-block;
 }
 
 .close-container {
@@ -306,9 +321,22 @@ ul li span:hover {
   background: #edeef0;
 }
 
-.header-row h2:focus,
-.header-row h2:focus-visible {
-  outline: none;
-  box-shadow: none; 
-  border: none;
+.close-container-wrapper .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: rgba(145, 145, 145, 0.8);
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-left: -20px;
+}
+
+.close-container-wrapper:hover .tooltiptext {
+  visibility: visible;
 }
