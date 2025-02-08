@@ -406,3 +406,10 @@ function updateContainerCloseButtons() {
     });
   }
 }
+function removeList(closeButton) {
+  const parentApp = closeButton.closest('.todo-app');
+  if (parentApp) {
+    parentApp.remove();
+    updateContainerCloseButtons();
+  }
+}
