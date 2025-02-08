@@ -257,6 +257,7 @@ function showTaskData() {
 // =========================================
 //        CREATE A NEW (ADDITIONAL) LIST
 // =========================================
+// Function to create a new list with proper tooltip
 function createList() {
   const newTodoApp = document.createElement('div');
   newTodoApp.classList.add('todo-app');
@@ -269,6 +270,9 @@ function createList() {
   newTitle.innerText = 'New To-Do List'; 
   newTitle.classList.add('header-title'); 
 
+  const closeBtnWrapper = document.createElement('div');
+  closeBtnWrapper.classList.add('close-container-wrapper');
+  
   const closeBtn = document.createElement('span');
   closeBtn.innerHTML = "\u00D7";
   closeBtn.classList.add('close-container');
@@ -276,9 +280,16 @@ function createList() {
     newTodoApp.remove();
     updateContainerCloseButtons();
   });
+  
+  const tooltip = document.createElement('span');
+  tooltip.classList.add('tooltiptext');
+  tooltip.textContent = 'Delete List';
+  
+  closeBtnWrapper.appendChild(closeBtn);
+  closeBtnWrapper.appendChild(tooltip);
 
   headerRow.appendChild(newTitle);
-  headerRow.appendChild(closeBtn);
+  headerRow.appendChild(closeBtnWrapper);
 
   newTodoApp.appendChild(headerRow);
 
@@ -316,96 +327,24 @@ function createList() {
   updateContainerCloseButtons();
 }
 
-function addTaskToList(inputElem, ulElem) {
-  if (inputElem.value.trim() === '') {
-    alert("Please enter a task");
-    return;
-  }
-  let li = document.createElement("li");
-  li.innerHTML = inputElem.value;
-  ulElem.appendChild(li);
-
-  let span = document.createElement("span");
-  span.innerHTML = "\u00d7";
-  li.appendChild(span);
-
-  addDragAndDropHandlers(li);
-  inputElem.value = '';
-}
-
-function handleListClick(e, ulElem) {
-  const li = e.target.closest('li');
-  if (!li) return;
-
-  const rect = li.getBoundingClientRect();
-  const clickX = e.clientX - rect.left;
-
-  if (clickX < 35) {
-    li.classList.toggle("checked");
-    return;
-  }
-
-  if (e.target.tagName === "SPAN") {
-    e.target.parentElement.remove();
-    return;
-  }
-
-  if (clickX >= 35 && e.target.tagName === "LI") {
-    editTaskInNewList(li, ulElem);
-  }
-}
-
-function editTaskInNewList(li, ulElem) {
-  if (li.classList.contains("editing")) return;
-
-  const span = li.querySelector("span");
-  const currentText = li.firstChild.textContent.trim();
-  const input = document.createElement("input");
-  input.type = "text";
-  input.value = currentText;
-  input.classList.add("edit-input");
-  li.classList.add("editing");
-
-  li.innerHTML = '';
-  li.appendChild(input);
-  li.appendChild(span);
-  input.focus();
-
-  function saveEdit() {
-    const newText = input.value.trim() || currentText;
-    li.innerHTML = newText;
-    li.appendChild(span);
-    li.classList.remove("editing");
-
-    addDragAndDropHandlers(li);
-  }
-
-  input.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-      saveEdit();
-    }
-  });
-
-  input.addEventListener("blur", saveEdit);
-}
-
 function updateContainerCloseButtons() {
   const apps = document.querySelectorAll('.todo-app');
   if (apps.length === 1) {
     const onlyApp = apps[0];
-    const closeBtn = onlyApp.querySelector('.close-container');
-    if (closeBtn) {
-      closeBtn.style.display = 'none';
+    const closeWrapper = onlyApp.querySelector('.close-container-wrapper');
+    if (closeWrapper) {
+      closeWrapper.style.display = 'none';
     }
   } else {
     apps.forEach(app => {
-      const closeBtn = app.querySelector('.close-container');
-      if (closeBtn) {
-        closeBtn.style.display = 'inline-block';
+      const closeWrapper = app.querySelector('.close-container-wrapper');
+      if (closeWrapper) {
+        closeWrapper.style.display = 'inline-block';
       }
     });
   }
 }
+
 function removeList(closeButton) {
   const parentApp = closeButton.closest('.todo-app');
   if (parentApp) {
