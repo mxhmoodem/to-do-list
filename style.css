@@ -147,7 +147,7 @@ body {
   width: 400px;
   background: #fff;
   margin: 40px 10px 20px 10px;
-  padding: 40px 30px 70px;
+  padding: 40px 30px 40px;
   border-radius: 10px;
   box-shadow: 0 0 10px 0px rgb(209, 209, 209);
 }
@@ -275,31 +275,40 @@ ul li span:hover {
 }
 
 .header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   position: relative;
   margin-bottom: 20px;     
+  min-height: 40px;
 }
 
 .header-row h2 {
   margin: 0;        
-  padding: 0;        
-  line-height: 1.2; 
+  padding: 5px 30px 5px 0;        
+  line-height: 1.5; 
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .close-container {
+  position: absolute;
+  top: 5px;    
+  right: 0;             
   width: 40px;
   height: 40px;
+  line-height: 40px;
   font-size: 22px;
   color: #555;
-  line-height: 40px;
   text-align: center;
   border-radius: 50%;
   cursor: pointer;
-  margin-left: 10px;
 }
 
 .close-container:hover {
   background: #edeef0;
+}
+
+.header-row h2:focus,
+.header-row h2:focus-visible {
+  outline: none;
+  box-shadow: none; 
+  border: none;
 }
