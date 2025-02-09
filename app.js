@@ -1,3 +1,5 @@
+let currentListToDelete = null;
+
 document.addEventListener('DOMContentLoaded', (event) => {
   const savedName = localStorage.getItem('userName');
   const userNameElement = document.getElementById('user-name');
@@ -272,7 +274,7 @@ function createList() {
 
   const newTitle = document.createElement('h2');
   newTitle.contentEditable = 'true';
-  newTitle.innerText = 'New To-Do List'; 
+  newTitle.innerText = 'New List'; 
   newTitle.classList.add('header-title'); 
 
   newTitle.addEventListener('blur', function() {
@@ -292,9 +294,8 @@ function createList() {
   const closeBtn = document.createElement('span');
   closeBtn.innerHTML = "\u00D7";
   closeBtn.classList.add('close-container');
-  closeBtn.addEventListener('click', () => {
-    newTodoApp.remove();
-    updateContainerCloseButtons();
+  closeBtn.addEventListener('click', function() {
+    removeList(this);
   });
   
   const tooltip = document.createElement('span');
@@ -414,8 +415,8 @@ function updateContainerCloseButtons() {
 function removeList(closeButton) {
   const parentApp = closeButton.closest('.todo-app');
   if (parentApp) {
-    parentApp.remove();
-    updateContainerCloseButtons();
+    currentListToDelete = parentApp;
+    showConfirmationModal();
   }
 }
 
@@ -482,11 +483,11 @@ function createListFromSaved(title, tasks) {
   const closeBtn = document.createElement('span');
   closeBtn.innerHTML = "\u00D7";
   closeBtn.classList.add('close-container');
-  closeBtn.addEventListener('click', () => {
-    newTodoApp.remove();
-    updateContainerCloseButtons();
+  closeBtn.addEventListener('click', function() {
+    removeList(this);
     saveAllLists(); 
   });
+  
   
   const tooltip = document.createElement('span');
   tooltip.classList.add('tooltiptext');
@@ -546,3 +547,34 @@ function createListFromSaved(title, tasks) {
 
   updateContainerCloseButtons();
 }
+
+function showConfirmationModal() {
+  const modal = document.getElementById("confirmation-modal");
+  modal.style.display = "block";
+}
+
+function hideConfirmationModal() {
+  const modal = document.getElementById("confirmation-modal");
+  modal.style.display = "none";
+  currentListToDelete = null;
+}
+
+document.getElementById("confirm-btn").addEventListener("click", function() {
+  if (currentListToDelete) {
+    currentListToDelete.remove();
+    updateContainerCloseButtons();
+    saveAllLists();
+  }
+  hideConfirmationModal();
+});
+
+document.getElementById("cancel-btn").addEventListener("click", function() {
+  hideConfirmationModal();
+});
+
+window.addEventListener("click", function(event) {
+  const modal = document.getElementById("confirmation-modal");
+  if (event.target === modal) {
+    hideConfirmationModal();
+  }
+});
