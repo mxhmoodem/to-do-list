@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   updateContainerCloseButtons();
   displayCurrentDate();
   showTaskData(); 
+  loadAllLists();
 });
 
 // =========================================
@@ -134,6 +135,7 @@ listContainer.addEventListener("click", function(e) {
 
   if (clickX < 35) {
     li.classList.toggle("checked");
+    saveAllLists();
     saveData();
     return;
   }
@@ -141,6 +143,7 @@ listContainer.addEventListener("click", function(e) {
   if (e.target.tagName === "SPAN") {
     e.target.parentElement.remove();
     saveData();
+    saveAllLists();
     return;
   }
 
@@ -175,6 +178,7 @@ function editTask(li) {
     addDragAndDropHandlers(li);
 
     saveData();
+    saveAllLists();
   }
 
   input.addEventListener("keydown", function(event) {
@@ -223,6 +227,7 @@ function handleDrop(e) {
     if (list.id === 'list-container') {
       saveData();
     }
+    saveAllLists();
   }
   return false;
 }
@@ -270,6 +275,17 @@ function createList() {
   newTitle.innerText = 'New To-Do List'; 
   newTitle.classList.add('header-title'); 
 
+  newTitle.addEventListener('blur', function() {
+    saveAllLists();
+  });
+
+  newTitle.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      newTitle.blur();
+    }
+  });
+
   const closeBtnWrapper = document.createElement('div');
   closeBtnWrapper.classList.add('close-container-wrapper');
   
@@ -314,17 +330,67 @@ function createList() {
   const container = document.querySelector('.container');
   container.appendChild(newTodoApp);
 
-  addButton.addEventListener('click', () => addTaskToList(newInput, newUl));
+  addButton.addEventListener('click', () => {
+    addTaskToList(newInput, newUl);
+    saveAllLists(); 
+  });
+
   newInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       addTaskToList(newInput, newUl);
+      saveAllLists();
     }
   });
   newUl.addEventListener('click', (e) => {
     handleListClick(e, newUl);
+    saveAllLists();
   });
 
   updateContainerCloseButtons();
+  saveAllLists();
+}
+
+function addTaskToList(inputElement, ulElement) {
+  if (inputElement.value === '') {
+    alert("Please enter a task");
+  } else {
+    let li = document.createElement("li");
+    li.innerHTML = inputElement.value;
+    ulElement.appendChild(li);
+
+    let span = document.createElement("span");
+    span.innerHTML = "\u00d7";
+    li.appendChild(span);
+
+    li.setAttribute('draggable', 'true');
+    addDragAndDropHandlers(li);
+  }
+  inputElement.value = '';
+  saveAllLists();
+}
+
+function handleListClick(e, ulElement) {
+  const li = e.target.closest('li');
+  if (!li) return;
+
+  const rect = li.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+
+  if (clickX < 35) {
+    li.classList.toggle("checked");
+    saveAllLists();
+    return;
+  }
+
+  if (e.target.tagName === "SPAN") {
+    e.target.parentElement.remove();
+    saveAllLists();
+    return;
+  }
+
+  if (clickX >= 35 && e.target.tagName === "LI") {
+    editTask(li);
+  }
 }
 
 function updateContainerCloseButtons() {
@@ -351,4 +417,132 @@ function removeList(closeButton) {
     parentApp.remove();
     updateContainerCloseButtons();
   }
+}
+
+function saveAllLists() {
+  const container = document.querySelector('.container');
+  const todoApps = container.querySelectorAll('.todo-app');
+  const lists = [];
+
+  todoApps.forEach((app, index) => {
+    const title = app.querySelector('h2').innerText;
+    const tasks = app.querySelector('ul').innerHTML;
+    lists.push({
+      title: title,
+      tasks: tasks
+    });
+  });
+
+  localStorage.setItem('todoLists', JSON.stringify(lists));
+}
+
+function loadAllLists() {
+  const savedLists = localStorage.getItem('todoLists');
+  if (savedLists) {
+    const lists = JSON.parse(savedLists);
+    
+    if (lists.length > 0) {
+      const firstList = document.querySelector('.todo-app');
+      if (firstList) {
+        firstList.querySelector('h2').innerText = lists[0].title;
+        const firstUl = firstList.querySelector('ul');
+        firstUl.innerHTML = lists[0].tasks;
+        const listItems = firstUl.querySelectorAll('li');
+        listItems.forEach(li => {
+          addDragAndDropHandlers(li);
+        });
+      }
+    }
+
+    for (let i = 1; i < lists.length; i++) {
+      createListFromSaved(lists[i].title, lists[i].tasks);
+    }
+  }
+}
+
+function createListFromSaved(title, tasks) {
+  const newTodoApp = document.createElement('div');
+  newTodoApp.classList.add('todo-app');
+
+  const headerRow = document.createElement('div');
+  headerRow.classList.add('header-row');
+
+  const newTitle = document.createElement('h2');
+  newTitle.contentEditable = 'true';
+  newTitle.innerText = title;
+  newTitle.classList.add('header-title');
+
+  newTitle.addEventListener('blur', function() {
+    saveAllLists();
+  });
+
+  const closeBtnWrapper = document.createElement('div');
+  closeBtnWrapper.classList.add('close-container-wrapper');
+  
+  const closeBtn = document.createElement('span');
+  closeBtn.innerHTML = "\u00D7";
+  closeBtn.classList.add('close-container');
+  closeBtn.addEventListener('click', () => {
+    newTodoApp.remove();
+    updateContainerCloseButtons();
+    saveAllLists(); 
+  });
+  
+  const tooltip = document.createElement('span');
+  tooltip.classList.add('tooltiptext');
+  tooltip.textContent = 'Delete List';
+  
+  closeBtnWrapper.appendChild(closeBtn);
+  closeBtnWrapper.appendChild(tooltip);
+
+  headerRow.appendChild(newTitle);
+  headerRow.appendChild(closeBtnWrapper);
+
+  newTodoApp.appendChild(headerRow);
+
+  const rowDiv = document.createElement('div');
+  rowDiv.classList.add('row');
+
+  const newInput = document.createElement('input');
+  newInput.type = 'text';
+  newInput.placeholder = 'Add a new task';
+
+  const addButton = document.createElement('button');
+  addButton.innerText = 'Add Task';
+
+  rowDiv.appendChild(newInput);
+  rowDiv.appendChild(addButton);
+
+  const newUl = document.createElement('ul');
+  newUl.innerHTML = tasks;
+
+  newTodoApp.appendChild(rowDiv);
+  newTodoApp.appendChild(newUl);
+
+  const container = document.querySelector('.container');
+  container.appendChild(newTodoApp);
+
+  addButton.addEventListener('click', () => {
+    addTaskToList(newInput, newUl);
+    saveAllLists();
+  });
+  
+  newInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      addTaskToList(newInput, newUl);
+      saveAllLists();
+    }
+  });
+  
+  newUl.addEventListener('click', (e) => {
+    handleListClick(e, newUl);
+    saveAllLists();
+  });
+
+  const listItems = newUl.querySelectorAll('li');
+  listItems.forEach(li => {
+    addDragAndDropHandlers(li);
+  });
+
+  updateContainerCloseButtons();
 }
