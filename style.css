@@ -315,10 +315,11 @@ ul li span:hover {
   text-align: center;
   border-radius: 50%;
   cursor: pointer;
+  background-color: #edeef0;
 }
 
 .close-container:hover {
-  background: #edeef0;
+  background: #e0e0e0;
 }
 
 .close-container-wrapper .tooltiptext {
@@ -339,4 +340,44 @@ ul li span:hover {
 
 .close-container-wrapper:hover .tooltiptext {
   visibility: visible;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.575);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.modal-buttons {
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #226ff5;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.modal-buttons button:hover {
+  background-color: #0944db;
 }
