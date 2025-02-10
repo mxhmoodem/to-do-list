@@ -71,6 +71,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   sidebar.classList.toggle('collapsed');
+  const mainContent = document.querySelector('.main-content');
+  mainContent.classList.toggle('sidebar-collapsed');
 }
 
 function saveName(element) {
