@@ -8,22 +8,19 @@
 body {
   background-color: #f8fafd;
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
-  overflow: hidden;
 }
 
 /* SIDEBAR */
 .sidebar {
-  width: 230px;
-  min-width: 230px;
+  width: 12%;
+  min-width: 12%;
   background-color: #002765;
   color: #ffffff;
   padding: 20px;
   transition: transform 0.3s ease-in-out;
-  position: fixed;
-  height: 100vh;
-  z-index: 100;
+  position: relative;
 }
 
 .sidebar-header {
@@ -107,25 +104,18 @@ body {
 /* MAIN CONTENT */
 .main-content {
   flex: 1;
-  margin-left: 200px; /* Match sidebar width */
   position: relative;
-  padding: 0;
-  transition: margin-left 0.3s ease-in-out;
-  height: 100vh;
-  overflow: hidden;
-  width: calc(100% - 200px);
-}
-
-.main-content.sidebar-collapsed {
-  margin-left: 0;
-  width: 100%;
+  padding: 0 30px;
 }
 
 .welcome-section {
   position: fixed; 
   right: 30px;
-  top: 30px;
+  top: 10px;
   z-index: 99;
+  padding: 30px 0 0;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 #current-date {
@@ -139,15 +129,11 @@ body {
 
 .container {
   gap: 10px;   
-  padding: 10px 0 20px;
+  padding: 10px;
+  margin-top: 70px;
   display: flex;
   justify-content: center;
   align-items: flex-start;  
-  overflow-x: auto;
-  height: calc(100vh - 100px);
-  margin-top: 40px;
-  padding-left: max(10px, calc((100% - 400px) / 2));
-  width: 100%;
 }
 
 #header-title {
@@ -159,7 +145,6 @@ body {
 
 .todo-app {
   width: 400px;
-  min-width: 400px;
   background: #fff;
   margin: 40px 10px 20px 10px;
   padding: 40px 30px 40px;
@@ -366,10 +351,8 @@ ul li span:hover {
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
   background-color: rgba(0, 0, 0, 0.575);
 }
-
 .modal-content {
   background-color: #fff;
   margin: 15% auto;
@@ -379,11 +362,9 @@ ul li span:hover {
   text-align: center;
   font-size: 18px;
 }
-
 .modal-buttons {
   margin-top: 20px;
 }
-
 .modal-buttons button {
   margin: 0 10px;
   padding: 10px 20px;
@@ -393,24 +374,6 @@ ul li span:hover {
   cursor: pointer;
   border-radius: 5px;
 }
-
 .modal-buttons button:hover {
   background-color: #0944db;
-}
-
-.container::-webkit-scrollbar {
-  height: 8px;
-}
-
-.container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.container::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
-}
-
-.container::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }
