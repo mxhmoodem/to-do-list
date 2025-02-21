@@ -2,7 +2,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-family: 'Poppins', sans-serif; 
+  /*maybe comic sans*/
 }
 
 body {
@@ -134,6 +135,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;  
+  flex-wrap: nowrap; 
+  overflow-x: auto;
+  height: calc(100vh - 70px);
 }
 
 #header-title {
