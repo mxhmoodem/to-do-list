@@ -8,52 +8,56 @@
 </head>
 
 <body>
-
-  <div class="tooltip">
-    <button class="toggle-btn" id="toggle-btn" onclick="toggleSidebar()">☰</button>
-    <span class="tooltiptext">Toggle Sidebar</span>
-  </div>
-
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <h2>To-Do List App</h2>
-      <h3>
-        Welcome back, 
-        <span
-          id="user-name"
-          contenteditable="true"
-          tabindex="0"
-          onblur="saveName(this)"
-        ></span>
-      </h3>
+  <div class="top-banner">
+    <div class="banner-left">
+      <div class="tooltip">
+        <button class="toggle-btn" id="toggle-btn" onclick="toggleSidebar()">☰</button>
+        <!-- <span class="tooltiptext">Toggle Sidebar</span> -->
+      </div>
+      <h1>To-Do List App</h1>
     </div>
-    <div class="create-list-btn" id="create-list-btn" onclick="createList()">
-        <span>+</span>
-        <div>Create</div>
-    </div>
-  </div>
-
-  <div class="main-content sidebar-collapsed">
-    <div class="welcome-section">
+    <div class="banner-right">
       <span id="current-date"></span>
     </div>
+  </div>
 
-    <div class="container">
-      <div class="todo-app">
-        <div class="header-row">
-          <h2 id="header-title" contenteditable="True">To-Do List</h2>
-          <div class="close-container-wrapper">
-            <span class="close-container" onclick="removeList(this)">&#x00D7;</span>
-            <span class="tooltiptext">Delete List</span>
+  <div class="content-wrapper">
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h3>
+          Welcome back, 
+          <span
+            id="user-name"
+            contenteditable="true"
+            tabindex="0"
+            onblur="saveName(this)"
+          ></span>
+        </h3>
+      </div>
+      <div class="create-list-btn" id="create-list-btn" onclick="createList()">
+          <span>+</span>
+          <div>Create</div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="container">
+        <div class="todo-app">
+          <div class="header-row">
+            <h2 id="header-title" contenteditable="True">To-Do List</h2>
+            <div class="close-container-wrapper">
+              <span class="close-container" onclick="removeList(this)">&#x00D7;</span>
+              <span class="tooltiptext">Delete List</span>
+            </div>  
           </div>
+          <div class="row">
+            <input type="text" id="input-box" placeholder="Add a new task" />
+            <button onclick="addTask()">Add Task</button>
+          </div>
+          <ul id="list-container">
+            <!-- List items will be added here -->
+          </ul>
         </div>
-        <div class="row">
-          <input type="text" id="input-box" placeholder="Add a new task" />
-          <button onclick="addTask()">Add Task</button>
-        </div>
-        <ul id="list-container">
-          <!-- List items will be added here -->
-        </ul>
       </div>
     </div>
   </div>
