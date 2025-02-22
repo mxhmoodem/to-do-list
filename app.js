@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 // =========================================
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
-  sidebar.classList.toggle('collapsed');
   const mainContent = document.querySelector('.main-content');
+  sidebar.classList.toggle('collapsed');
   mainContent.classList.toggle('sidebar-collapsed');
 }
 
@@ -415,9 +415,9 @@ function updateContainerCloseButtons() {
 }
 
 function removeList(closeButton) {
-  const parentApp = closeButton.closest('.todo-app');
-  if (parentApp) {
-    currentListToDelete = parentApp;
+  const todoApp = closeButton.closest('.todo-app');
+  if (todoApp) {
+    currentListToDelete = todoApp;
     showConfirmationModal();
   }
 }
@@ -553,11 +553,17 @@ function createListFromSaved(title, tasks) {
 function showConfirmationModal() {
   const modal = document.getElementById("confirmation-modal");
   modal.style.display = "block";
+  setTimeout(() => {
+    modal.classList.add("show");
+  }, 10);
 }
 
 function hideConfirmationModal() {
   const modal = document.getElementById("confirmation-modal");
-  modal.style.display = "none";
+  modal.classList.remove("show");
+  setTimeout(() => {
+    modal.style.display = "none";
+  }, 300);
   currentListToDelete = null;
 }
 
@@ -570,9 +576,7 @@ document.getElementById("confirm-btn").addEventListener("click", function() {
   hideConfirmationModal();
 });
 
-document.getElementById("cancel-btn").addEventListener("click", function() {
-  hideConfirmationModal();
-});
+document.getElementById("cancel-btn").addEventListener("click", hideConfirmationModal);
 
 window.addEventListener("click", function(event) {
   const modal = document.getElementById("confirmation-modal");
