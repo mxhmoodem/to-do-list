@@ -120,7 +120,7 @@ body {
   font-size: 16px;
   cursor: pointer;
   border-radius: 40px;
-  width: 12vw;
+  width: 200px;
   box-shadow: 0 0 4px rgba(59, 59, 59, 0.749);
   transition: background-color 0.2s ease;
   margin: 50px 0 0 4px;
