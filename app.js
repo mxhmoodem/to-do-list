@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   displayCurrentDate();
   showTaskData(); 
   loadAllLists();
+  updateSidebarList();
 });
 
 // =========================================
@@ -97,6 +98,22 @@ function displayCurrentDate() {
     day: 'numeric'
   });
   dateElement.textContent = dateString;
+}
+
+function updateSidebarList() {
+  const savedLists = localStorage.getItem('todoLists');
+  const listOfListsDiv = document.getElementById('list-of-lists');
+  listOfListsDiv.innerHTML = '';
+
+  if (savedLists) {
+    const lists = JSON.parse(savedLists);
+    lists.forEach((list) => {
+      const listItem = document.createElement('div');
+      listItem.textContent = list.title;
+      listItem.classList.add('sidebar-list-item');
+      listOfListsDiv.appendChild(listItem);
+    });
+  }
 }
 
 // =========================================
@@ -437,6 +454,7 @@ function saveAllLists() {
   });
 
   localStorage.setItem('todoLists', JSON.stringify(lists));
+  updateSidebarList();
 }
 
 function loadAllLists() {
