@@ -1,5 +1,3 @@
-let currentListToDelete = null;
-
 document.addEventListener('DOMContentLoaded', (event) => {
   const savedName = localStorage.getItem('userName');
   const userNameElement = document.getElementById('user-name');
@@ -63,7 +61,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   displayCurrentDate();
   showTaskData(); 
   loadAllLists();
-  arList();
+  updateSidebarList();
 });
 
 // =========================================
@@ -108,7 +106,9 @@ function updateSidebarList() {
   const savedLists = localStorage.getItem('todoLists');
   if (savedLists) {
     lists = JSON.parse(savedLists);
-  } else {
+  }
+
+  if (lists.length === 0) {
     const defaultTitle = document.querySelector('.todo-app h2').innerText;
     lists.push({ title: defaultTitle });
   }
@@ -120,6 +120,7 @@ function updateSidebarList() {
     listOfListsDiv.appendChild(listItem);
   });
 }
+
 
 // =========================================
 //        ORIGINAL (SINGLE) TO-DO LIST
@@ -435,6 +436,8 @@ function updateContainerCloseButtons() {
     });
   }
 }
+
+let currentListToDelete = null;
 
 function removeList(closeButton) {
   const todoApp = closeButton.closest('.todo-app');
