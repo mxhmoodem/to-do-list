@@ -63,6 +63,8 @@ body {
   position: fixed;
   overflow-y: auto;
   z-index: 1000;
+  scrollbar-width: thin;
+  scrollbar-color: #aaaaaa #f8f8f8;
 }
 
 .sidebar.collapsed {
@@ -212,6 +214,9 @@ body {
 .todo-app ul {
   max-height: 65vh;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #aaaaaa #f8f8f8;
+  padding-right: 10px;
 }
 
 /* Header Styles */
@@ -494,7 +499,27 @@ ul li span:hover {
 /* Drag and Drop Styles */
 li.dragging {
   opacity: 0.5;
-  background-color: #f8fafd;
+  background-color: #d6e0ef;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8f8f8;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #aaaaaa;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666666;
 }
 
 /* Responsive Styles */
@@ -544,3 +569,4 @@ li.dragging {
     justify-content: center;
   }
 }
+
