@@ -9,6 +9,7 @@ body {
   background-color: #f8fafd;
   min-height: 100vh;
   margin: 0;
+  overflow-y: hidden;
 }
 
 /* Top Banner */
@@ -191,10 +192,13 @@ body {
 /* Container and Todo App Styles */
 .container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 20px;
   padding: 10px;
+  overflow-x: auto; 
+  overflow-y: hidden;
 }
+
 
 .todo-app {
   width: 400px;
@@ -202,6 +206,11 @@ body {
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(209, 209, 209, 0.5);
+}
+
+.todo-app ul {
+  max-height: 65vh;
+  overflow-y: auto;
 }
 
 /* Header Styles */
