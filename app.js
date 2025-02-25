@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   displayCurrentDate();
   showTaskData(); 
   loadAllLists();
-  updateSidebarList();
+  arList();
 });
 
 // =========================================
@@ -101,19 +101,24 @@ function displayCurrentDate() {
 }
 
 function updateSidebarList() {
-  const savedLists = localStorage.getItem('todoLists');
   const listOfListsDiv = document.getElementById('list-of-lists');
   listOfListsDiv.innerHTML = '';
-
+  let lists = [];
+  
+  const savedLists = localStorage.getItem('todoLists');
   if (savedLists) {
-    const lists = JSON.parse(savedLists);
-    lists.forEach((list) => {
-      const listItem = document.createElement('div');
-      listItem.textContent = list.title;
-      listItem.classList.add('sidebar-list-item');
-      listOfListsDiv.appendChild(listItem);
-    });
+    lists = JSON.parse(savedLists);
+  } else {
+    const defaultTitle = document.querySelector('.todo-app h2').innerText;
+    lists.push({ title: defaultTitle });
   }
+  
+  lists.forEach((list) => {
+    const listItem = document.createElement('div');
+    listItem.textContent = list.title;
+    listItem.classList.add('sidebar-list-item');
+    listOfListsDiv.appendChild(listItem);
+  });
 }
 
 // =========================================
