@@ -505,6 +505,13 @@ function createListFromSaved(title, tasks) {
     saveAllLists();
   });
 
+  newTitle.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.blur();
+    }
+  });
+
   const closeBtnWrapper = document.createElement('div');
   closeBtnWrapper.classList.add('close-container-wrapper');
   
