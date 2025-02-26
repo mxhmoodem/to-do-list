@@ -289,7 +289,6 @@ function showTaskData() {
 // =========================================
 //        CREATE A NEW (ADDITIONAL) LIST
 // =========================================
-// Function to create a new list with proper tooltip
 function createList() {
   const newTodoApp = document.createElement('div');
   newTodoApp.classList.add('todo-app');
@@ -616,4 +615,67 @@ window.addEventListener("click", function(event) {
   if (event.target === modal) {
     hideConfirmationModal();
   }
+});
+
+
+// =========================================
+//        FEEDBACK FORM & EMAILJS
+// =========================================
+
+(function() {
+  emailjs.init("LvZWl0qGgsXQprqKp");
+})();
+
+var feedbackmodal = document.getElementById("feedbackModal");
+var feedbackbtn = document.getElementById("feedbackBtn");
+var feedbackspan = document.getElementsByClassName("close")[0];
+
+feedbackbtn.onclick = function() {
+  console.log("Feedback button clicked");
+  feedbackmodal.style.display = "block";
+  setTimeout(() => {
+    feedbackmodal.classList.add("show");
+  }, 10);
+};
+
+feedbackspan.onclick = function() {
+  feedbackmodal.classList.remove("show");
+  setTimeout(() => {
+    feedbackmodal.style.display = "none";
+  }, 300);
+};
+
+window.addEventListener("click", function(event) {
+  if (event.target == feedbackmodal) {
+    feedbackmodal.classList.remove("show");
+    setTimeout(() => {
+      feedbackmodal.style.display = "none";
+    }, 300);
+  }
+});
+
+document.getElementById("feedbackForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  var feedbackText = document.getElementById("feedbackText").value.trim();
+
+  if (feedbackText === "") {
+    alert("Please enter some feedback.");
+    return;
+  }
+
+  var templateParams = {
+    feedback: feedbackText
+  };
+
+  emailjs.send("service_fh0bnws", "template_3t4v4im", templateParams)
+    .then(function(response) {
+      console.log("SUCCESS!", response.status, response.text);
+      alert("Feedback sent successfully!");
+      feedbackmodal.style.display = "none";
+      document.getElementById("feedbackText").value = "";
+    }, function(error) {
+      console.log("FAILED...", error);
+      alert("Failed to send feedback. Please try again later.");
+    });
 });
