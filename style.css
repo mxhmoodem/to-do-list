@@ -95,6 +95,31 @@ body {
   border-radius: 3px;
 }
 
+.feedback-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+#feedbackBtn {
+  width: 90%;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #226ff5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#feedbackBtn:hover {
+  background-color: #0944db;
+}
+
+
 /* Toggle Button */
 .toggle-btn {
   background-color: transparent;
@@ -495,6 +520,40 @@ ul li span:hover {
   background-color: #5a6268;
 }
 
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  resize: vertical;
+  margin-top: 10px;
+  padding: 5px;
+}
+
+button[type="submit"] {
+  background-color: #226ff5;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #0944db;
+}
+
 /* Drag and Drop Styles */
 li.dragging {
   opacity: 0.5;
@@ -568,4 +627,3 @@ li.dragging {
     justify-content: center;
   }
 }
-
