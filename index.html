@@ -40,6 +40,9 @@
       </div>
       <h4 class="lists-header">Lists</h4>
       <div class="list-of-lists" id="list-of-lists"></div> 
+      <div class="feedback-btn">
+        <button id="feedbackBtn">Give Feedback</button>
+      </div>      
     </div>
 
     <div class="main-content">
@@ -74,6 +77,18 @@
     </div>
   </div>
 
+  <div id="feedbackModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Feedback</h2>
+      <form id="feedbackForm">
+        <textarea id="feedbackText" name="feedback" rows="5" cols="30" placeholder="Write your feedback here..."></textarea>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
