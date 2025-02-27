@@ -225,6 +225,7 @@ body {
   padding: 10px;
   overflow-x: auto; 
   overflow-y: hidden;
+  align-items: flex-start;
 }
 
 
