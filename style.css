@@ -201,7 +201,7 @@ body {
 .list-of-lists {
   border: 1px solid #dedede; 
   border-radius: 5px;
-  padding: 10px;
+  padding: 3px 10px;
   background-color: #fff; 
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1); 
 }
@@ -373,8 +373,44 @@ ul li span:hover {
   outline: none;
   padding: 0 5px;
   color: #555555;
-  background-color: #f8fafd;
   border-radius: 3px;
+}
+
+/* Due Date Styles */
+.add-due-date-btn {
+  background-color: #eee;
+  border: none;
+  color: #333;
+  padding: 5px 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.add-due-date-btn:hover {
+  background-color: #ccc;
+}
+
+.due-date-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.due-date-controls button:hover {
+  background-color: #ccc;
+}
+
+.due-date-picker {
+  margin-top: 5px;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.due-date-display {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #888;
 }
 
 /* Tooltip Styles */
@@ -628,3 +664,4 @@ li.dragging {
     justify-content: center;
   }
 }
+
