@@ -182,30 +182,56 @@ listContainer.addEventListener("click", function(e) {
 function editTask(li) {
   if (li.classList.contains("editing")) return;
 
-  const span = li.querySelector("span");
-  const currentText = li.firstChild.textContent.trim();
+  let storedDueDate = li.dataset.dueDate || null;
+  let dueDateDisplay = li.querySelector('.due-date-display');
+  if (dueDateDisplay) {
+    dueDateDisplay.remove();
+  }
+
+  const currentText = li.firstChild ? li.firstChild.textContent.trim() : '';
   const input = document.createElement("input");
   input.type = "text";
   input.value = currentText;
   input.classList.add("edit-input");
   li.classList.add("editing");
 
+  const span = li.querySelector("span") || document.createElement("span");
   li.innerHTML = '';
   li.appendChild(input);
   li.appendChild(span);
   input.focus();
 
-  function saveEdit() {
-    const newText = input.value.trim() || currentText;
-    li.innerHTML = newText;
-    li.appendChild(span);
-    li.classList.remove("editing");
-
-    li.setAttribute('draggable', 'true');
-    addDragAndDropHandlers(li);
-
-    saveData();
-    saveAllLists();
+  if (storedDueDate) {
+    let controlsContainer = document.createElement('div');
+    controlsContainer.classList.add('due-date-controls');
+    
+    let changeDueDateBtn = document.createElement('button');
+    changeDueDateBtn.textContent = 'Change Due Date';
+    changeDueDateBtn.classList.add('add-due-date-btn');
+    changeDueDateBtn.addEventListener('mousedown', e => e.preventDefault());
+    changeDueDateBtn.addEventListener('click', () => {
+      if (!li.querySelector('.due-date-picker')) {
+        showDatePicker(li);
+      }
+    });
+    controlsContainer.appendChild(changeDueDateBtn);
+    
+    let deleteDueDateBtn = document.createElement('button');
+    deleteDueDateBtn.textContent = 'Delete Due Date';
+    deleteDueDateBtn.classList.add('add-due-date-btn');
+    deleteDueDateBtn.addEventListener('mousedown', e => e.preventDefault());
+    deleteDueDateBtn.addEventListener('click', () => {
+      let ddDisplay = li.querySelector('.due-date-display');
+      if (ddDisplay) ddDisplay.remove();
+      delete li.dataset.dueDate;
+      controlsContainer.remove();
+      addAddDueDateButton(li);
+    });
+    controlsContainer.appendChild(deleteDueDateBtn);
+    
+    li.appendChild(controlsContainer);
+  } else {
+    addAddDueDateButton(li);
   }
 
   input.addEventListener("keydown", function(event) {
@@ -214,7 +240,49 @@ function editTask(li) {
     }
   });
 
-  input.addEventListener("blur", saveEdit);
+  input.addEventListener("blur", function(e) {
+    if (
+      e.relatedTarget &&
+      (e.relatedTarget.classList.contains('add-due-date-btn') ||
+       e.relatedTarget.classList.contains('due-date-picker'))
+    ) {
+      return;
+    }
+    saveEdit();
+  });
+
+  function saveEdit() {
+    const newText = input.value.trim() || currentText;
+    li.innerHTML = newText;
+    li.appendChild(span);
+    li.classList.remove("editing");
+
+    const controls = li.querySelectorAll('.add-due-date-btn, .due-date-controls, .due-date-picker');
+    controls.forEach(ctrl => ctrl.remove());
+
+    if (li.dataset.dueDate) {
+      displayDueDate(li, li.dataset.dueDate);
+    }
+    li.style.color = "inherit";
+
+    li.setAttribute('draggable', 'true');
+    addDragAndDropHandlers(li);
+    saveData();
+    saveAllLists();
+  }
+}
+
+function addAddDueDateButton(li) {
+  let addDueDateBtn = document.createElement('button');
+  addDueDateBtn.textContent = 'Add Due Date';
+  addDueDateBtn.classList.add('add-due-date-btn');
+  addDueDateBtn.addEventListener('mousedown', e => e.preventDefault());
+  addDueDateBtn.addEventListener('click', () => {
+    if (!li.querySelector('.due-date-picker')) {
+      showDatePicker(li);
+    }
+  });
+  li.appendChild(addDueDateBtn);
 }
 
 // =========================================
@@ -679,3 +747,76 @@ document.getElementById("feedbackForm").addEventListener("submit", function(even
       alert("Failed to send feedback. Please try again later.");
     });
 });
+
+if (!taskElement.querySelector('.add-due-date-btn')) {
+  const addDueDateBtn = document.createElement('button');
+  addDueDateBtn.textContent = 'Add Due Date';
+  addDueDateBtn.classList.add('add-due-date-btn');
+  addDueDateBtn.addEventListener('click', () => {
+    showDatePicker(taskElement);
+  });
+  taskElement.appendChild(addDueDateBtn);
+}
+
+// =========================================
+//        DUE DATE FUNCTIONALITY
+// =========================================
+
+function formatDate(dateObj) {
+  const day = dateObj.getDate();
+  const month = dateObj.toLocaleString('en-US', { month: 'short' });
+  const year = dateObj.getFullYear();
+  return `${day}${getOrdinal(day)} ${month} ${year}`;
+}
+
+function getOrdinal(day) {
+  if (day > 3 && day < 21) return 'th';
+  switch (day % 10) {
+    case 1: return 'st';
+    case 2: return 'nd';
+    case 3: return 'rd';
+    default: return 'th';
+  }
+}
+
+function showDatePicker(taskElement) {
+  if (taskElement.querySelector('.due-date-picker')) return;
+  const dateInput = document.createElement('input');
+  dateInput.classList.add('due-date-picker');
+  taskElement.appendChild(dateInput);
+
+  const fp = flatpickr(dateInput, {
+    onChange: function(selectedDates, dateStr) {
+      displayDueDate(taskElement, dateStr);
+      const btns = taskElement.querySelectorAll('.add-due-date-btn, .change-due-date-btn, .delete-due-date-btn');
+      btns.forEach(btn => btn.style.display = 'none');
+      dateInput.remove();
+    }
+  });
+  fp.open();
+}
+
+function displayDueDate(taskElement, date) {
+  let dueDateDisplay = taskElement.querySelector('.due-date-display');
+  if (!dueDateDisplay) {
+    dueDateDisplay = document.createElement('div');
+    dueDateDisplay.classList.add('due-date-display');
+    taskElement.appendChild(dueDateDisplay);
+  }
+  
+  const dueDateObj = new Date(date);
+  const formattedDate = formatDate(dueDateObj);
+  
+  dueDateDisplay.innerHTML = `<strong>Due Date:</strong> ${formattedDate}`;
+
+  dueDateObj.setHours(0,0,0,0);
+  let currentDate = new Date();
+  currentDate.setHours(0,0,0,0);
+  if (dueDateObj < currentDate) {
+    dueDateDisplay.style.color = 'red';
+  } else {
+    dueDateDisplay.style.color = '';
+  }
+
+  taskElement.dataset.dueDate = date;
+}
