@@ -62,6 +62,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
   showTaskData(); 
   loadAllLists();
   updateSidebarList();
+  updateAllDueDates();
+
+  setInterval(updateAllDueDates, 60000);
 });
 
 // =========================================
@@ -819,4 +822,25 @@ function displayDueDate(taskElement, date) {
   }
 
   taskElement.dataset.dueDate = date;
+}
+
+function updateAllDueDates() {
+  const tasks = document.querySelectorAll('#list-container li');
+  tasks.forEach(task => {
+    const dueDate = task.dataset.dueDate;
+    if (dueDate) {
+      const dueDateObj = new Date(dueDate);
+      dueDateObj.setHours(0, 0, 0, 0);
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+      const dueDateDisplay = task.querySelector('.due-date-display');
+      if (dueDateDisplay) {
+        if (dueDateObj < currentDate) {
+          dueDateDisplay.style.color = 'red';
+        } else {
+          dueDateDisplay.style.color = '';
+        }
+      }
+    }
+  });
 }
