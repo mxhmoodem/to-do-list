@@ -825,7 +825,7 @@ function displayDueDate(taskElement, date) {
 }
 
 function updateAllDueDates() {
-  const tasks = document.querySelectorAll('#list-container li');
+  const tasks = document.querySelectorAll('.todo-app ul li');
   tasks.forEach(task => {
     const dueDate = task.dataset.dueDate;
     if (dueDate) {
