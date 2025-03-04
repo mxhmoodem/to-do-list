@@ -230,11 +230,16 @@ body {
 
 
 .todo-app {
+  position: relative;
   width: 400px;
   background: #fff;
-  padding: 30px;
+  padding: 0 20px 30px 30px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(209, 209, 209, 0.5);
+}
+
+.todo-app:hover {
+  box-shadow: 0 0 10px rgba(209, 209, 209, 1);
 }
 
 .todo-app ul {
@@ -248,6 +253,7 @@ body {
 .header-row {
   position: relative;
   margin-bottom: 20px;
+  margin-top: 30px;
   min-height: 40px;
   display: flex;
   align-items: flex-start;
@@ -595,6 +601,49 @@ button[type="submit"]:hover {
 li.dragging {
   opacity: 0.5;
   background-color: #d6e0ef;
+}
+
+.drag-handle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 10px; 
+  cursor: grab;
+  display: none;
+  user-select: none; 
+  z-index: 100;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.dot-row {
+  display: flex;
+  justify-content: center;
+  gap: 3px; 
+  margin-bottom: 3px;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  background-color: #555; 
+  border-radius: 50%;
+}
+
+.todo-app:hover .drag-handle {
+  display: block;
+}
+
+.drop-indicator {
+  width: 2px;
+  background-color: blue;
+  margin: 0 9px; 
+}
+
+.todo-app.dragging {
+  cursor: grabbing;
 }
 
 /* Custom Scrollbar Styles */
