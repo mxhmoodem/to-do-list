@@ -1,3 +1,4 @@
+let draggedList = null;
 document.addEventListener('DOMContentLoaded', (event) => {
   const savedName = localStorage.getItem('userName');
   const userNameElement = document.getElementById('user-name');
@@ -57,13 +58,32 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
   });
 
+  document.addEventListener('mouseup', () => {
+    isDraggingHandle = false;
+  });
+
   updateContainerCloseButtons();
   displayCurrentDate();
-  showTaskData(); 
+  showTaskData();
   loadAllLists();
   updateSidebarList();
   updateAllDueDates();
 
+  const initialTodoApp = document.querySelector('.todo-app');
+  const initialHeaderRow = initialTodoApp.querySelector('.header-row');
+  const initialTitle = initialHeaderRow.querySelector('h2');
+  const dragHandle = createDragHandle();
+  dragHandle.addEventListener('mousedown', () => {
+    console.log('Mouse down on drag handle');
+    isDraggingHandle = true;
+  });
+  initialTodoApp.insertBefore(dragHandle, initialTodoApp.firstChild);
+  initialTodoApp.setAttribute('draggable', 'true');
+  initialTodoApp.addEventListener('dragstart', handleDragStart);
+  initialTodoApp.addEventListener('dragend', handleDragEnd);
+  const container = document.querySelector('.container');
+  container.addEventListener('dragover', handleDragOver);
+  container.addEventListener('drop', handleDrop);
   setInterval(updateAllDueDates, 60000);
 });
 
@@ -292,46 +312,61 @@ function addAddDueDateButton(li) {
 //               DRAG & DROP
 // =========================================
 let dragSrcEl = null;
+let isDraggingHandle = false;
 
 function handleDragStart(e) {
-  dragSrcEl = this;
-  e.dataTransfer.effectAllowed = 'move';
+  console.log('Drag start attempted');
+  if (!isDraggingHandle) {
+    console.log('Not dragging handle - drag prevented');
+    e.preventDefault();
+    return;
+  }
+  console.log('Dragging started on handle');
+  draggedList = this;
   this.classList.add('dragging');
+  document.body.style.cursor = 'grabbing';
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', '');
+  e.dataTransfer.setDragImage(this, 10, 10);
+
+  const dropIndicator = document.createElement('div');
+  dropIndicator.classList.add('drop-indicator');
+  document.querySelector('.container').appendChild(dropIndicator);
 }
 
+
 function handleDragOver(e) {
-  if (e.preventDefault) {
-    e.preventDefault();
-  }
-  e.dataTransfer.dropEffect = 'move';
-  return false;
+  e.preventDefault(); 
+  const container = document.querySelector('.container');
+  const dropTarget = determineDropTarget(e.clientX);
+  console.log('Drag over, clientX:', e.clientX, 'dropTarget:', dropTarget);
+  showDropIndicator(dropTarget);
 }
 
 function handleDrop(e) {
-  if (e.stopPropagation) {
-    e.stopPropagation();
+  console.log('Drop event fired');
+  e.preventDefault();
+  const container = document.querySelector('.container');
+  const dropTarget = determineDropTarget(e.clientX);
+  console.log('Dropping on', dropTarget);
+  if (dropTarget) {
+    container.insertBefore(draggedList, dropTarget);
+  } else {
+    container.appendChild(draggedList);
   }
-  if (dragSrcEl !== this) {
-    const list = this.parentNode;
-    const nodes = Array.from(list.children);
-    const dragIndex = nodes.indexOf(dragSrcEl);
-    const dropIndex = nodes.indexOf(this);
-
-    if (dragIndex < dropIndex) {
-      list.insertBefore(dragSrcEl, this.nextSibling);
-    } else {
-      list.insertBefore(dragSrcEl, this);
-    }
-    if (list.id === 'list-container') {
-      saveData();
-    }
-    saveAllLists();
-  }
-  return false;
+  const dropIndicator = container.querySelector('.drop-indicator');
+  if (dropIndicator) dropIndicator.remove();
+  updateSidebarList();
+  saveAllLists();
 }
 
 function handleDragEnd(e) {
   this.classList.remove('dragging');
+  document.body.style.cursor = 'default';
+  const dropIndicator = document.querySelector('.container').querySelector('.drop-indicator');
+  if (dropIndicator) dropIndicator.remove();
+  draggedList = null;
+  isDraggingHandle = false;
 }
 
 function addDragAndDropHandlers(li) {
@@ -360,6 +395,7 @@ function showTaskData() {
 // =========================================
 //        CREATE A NEW (ADDITIONAL) LIST
 // =========================================
+
 function createList() {
   const newTodoApp = document.createElement('div');
   newTodoApp.classList.add('todo-app');
@@ -367,13 +403,20 @@ function createList() {
   const headerRow = document.createElement('div');
   headerRow.classList.add('header-row');
 
+  const dragHandle = createDragHandle();
+  dragHandle.addEventListener('mousedown', () => {
+    console.log('Mouse down on drag handle');
+    isDraggingHandle = true;
+  });
+  newTodoApp.insertBefore(dragHandle, newTodoApp.firstChild);
+
   const newTitle = document.createElement('h2');
   newTitle.contentEditable = 'true';
-  newTitle.innerText = 'New List'; 
-  newTitle.classList.add('header-title'); 
+  newTitle.innerText = 'New List';
+  newTitle.classList.add('header-title');
 
   newTitle.addEventListener('blur', function() {
-    saveAllLists();
+    saveAllLists(); // Save changes when focus is lost
   });
 
   newTitle.addEventListener('keydown', function(event) {
@@ -385,24 +428,23 @@ function createList() {
 
   const closeBtnWrapper = document.createElement('div');
   closeBtnWrapper.classList.add('close-container-wrapper');
-  
+
   const closeBtn = document.createElement('span');
-  closeBtn.innerHTML = "\u00D7";
+  closeBtn.innerHTML = "\u00D7"; // Unicode for '×'
   closeBtn.classList.add('close-container');
   closeBtn.addEventListener('click', function() {
     removeList(this);
   });
-  
+
   const tooltip = document.createElement('span');
   tooltip.classList.add('tooltiptext');
   tooltip.textContent = 'Delete List';
-  
+
   closeBtnWrapper.appendChild(closeBtn);
   closeBtnWrapper.appendChild(tooltip);
 
   headerRow.appendChild(newTitle);
   headerRow.appendChild(closeBtnWrapper);
-
   newTodoApp.appendChild(headerRow);
 
   const rowDiv = document.createElement('div');
@@ -423,20 +465,25 @@ function createList() {
   newTodoApp.appendChild(rowDiv);
   newTodoApp.appendChild(newUl);
 
+  newTodoApp.setAttribute('draggable', 'true');
+  newTodoApp.addEventListener('dragstart', handleDragStart);
+  newTodoApp.addEventListener('dragend', handleDragEnd);
+
   const container = document.querySelector('.container');
   container.appendChild(newTodoApp);
 
   addButton.addEventListener('click', () => {
     addTaskToList(newInput, newUl);
-    saveAllLists(); 
+    saveAllLists();
   });
 
   newInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-      addTaskToList(newInput, newUl);
+      addTaskToList(newInput, newUl); 
       saveAllLists();
     }
   });
+
   newUl.addEventListener('click', (e) => {
     handleListClick(e, newUl);
     saveAllLists();
@@ -563,6 +610,13 @@ function createListFromSaved(title, tasks) {
   const newTodoApp = document.createElement('div');
   newTodoApp.classList.add('todo-app');
 
+  const dragHandle = createDragHandle();
+  dragHandle.addEventListener('mousedown', () => {
+    console.log('Mouse down on drag handle');
+    isDraggingHandle = true;
+  });
+  newTodoApp.insertBefore(dragHandle, newTodoApp.firstChild);
+
   const headerRow = document.createElement('div');
   headerRow.classList.add('header-row');
 
@@ -572,38 +626,36 @@ function createListFromSaved(title, tasks) {
   newTitle.classList.add('header-title');
 
   newTitle.addEventListener('blur', function() {
-    saveAllLists();
+    saveAllLists(); // Save changes when focus is lost
   });
 
   newTitle.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
       event.preventDefault();
-      this.blur();
+      this.blur(); // Exit editing on Enter key
     }
   });
 
   const closeBtnWrapper = document.createElement('div');
   closeBtnWrapper.classList.add('close-container-wrapper');
-  
+
   const closeBtn = document.createElement('span');
-  closeBtn.innerHTML = "\u00D7";
+  closeBtn.innerHTML = "\u00D7"; // Unicode for '×'
   closeBtn.classList.add('close-container');
   closeBtn.addEventListener('click', function() {
-    removeList(this);
-    saveAllLists(); 
+    removeList(this); // Remove the list when clicked
+    saveAllLists();
   });
-  
-  
+
   const tooltip = document.createElement('span');
   tooltip.classList.add('tooltiptext');
   tooltip.textContent = 'Delete List';
-  
+
   closeBtnWrapper.appendChild(closeBtn);
   closeBtnWrapper.appendChild(tooltip);
 
   headerRow.appendChild(newTitle);
   headerRow.appendChild(closeBtnWrapper);
-
   newTodoApp.appendChild(headerRow);
 
   const rowDiv = document.createElement('div');
@@ -620,10 +672,14 @@ function createListFromSaved(title, tasks) {
   rowDiv.appendChild(addButton);
 
   const newUl = document.createElement('ul');
-  newUl.innerHTML = tasks;
+  newUl.innerHTML = tasks; // Load saved tasks
 
   newTodoApp.appendChild(rowDiv);
   newTodoApp.appendChild(newUl);
+
+  newTodoApp.setAttribute('draggable', 'true');
+  newTodoApp.addEventListener('dragstart', handleDragStart);
+  newTodoApp.addEventListener('dragend', handleDragEnd); 
 
   const container = document.querySelector('.container');
   container.appendChild(newTodoApp);
@@ -632,14 +688,14 @@ function createListFromSaved(title, tasks) {
     addTaskToList(newInput, newUl);
     saveAllLists();
   });
-  
+
   newInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-      addTaskToList(newInput, newUl);
+      addTaskToList(newInput, newUl); 
       saveAllLists();
     }
   });
-  
+
   newUl.addEventListener('click', (e) => {
     handleListClick(e, newUl);
     saveAllLists();
@@ -650,6 +706,7 @@ function createListFromSaved(title, tasks) {
     addDragAndDropHandlers(li);
   });
 
+  // Update UI
   updateContainerCloseButtons();
 }
 
@@ -843,4 +900,84 @@ function updateAllDueDates() {
       }
     }
   });
+}
+
+// =========================================
+//        DRAG AND DROP LISTS
+// ========================================
+
+function determineDropTarget(x) {
+  const container = document.querySelector('.container');
+  const lists = Array.from(container.querySelectorAll('.todo-app')).filter(list => list !== draggedList);
+  if (lists.length === 0) return null;
+
+  let overList = null;
+  for (let list of lists) {
+    const rect = list.getBoundingClientRect();
+    if (rect.left < x && x < rect.right) {
+      overList = list;
+      break;
+    }
+  }
+  if (overList) {
+    const rect = overList.getBoundingClientRect();
+    const midpoint = rect.left + rect.width / 2;
+    if (x < midpoint) {
+      return overList; 
+    } else {
+      const index = lists.indexOf(overList);
+      return index < lists.length - 1 ? lists[index + 1] : null; 
+    }
+  } else {
+    if (x < lists[0].getBoundingClientRect().left) {
+      return lists[0]; 
+    } else if (x > lists[lists.length - 1].getBoundingClientRect().right) {
+      return null;
+    }
+  }
+  return null;
+}
+
+function showDropIndicator(dropTarget) {
+  const container = document.querySelector('.container');
+  const dropIndicator = container.querySelector('.drop-indicator');
+  if (dropIndicator) {
+    const todoApps = container.querySelectorAll('.todo-app');
+    let maxHeight = 0;
+    todoApps.forEach(app => {
+      const height = app.offsetHeight;
+      if (height > maxHeight) maxHeight = height;
+    });
+    dropIndicator.style.height = `${maxHeight}px`;
+    if (dropTarget) {
+      container.insertBefore(dropIndicator, dropTarget);
+    } else {
+      container.appendChild(dropIndicator);
+    }
+  }
+}
+
+function createDragHandle() {
+  const dragHandle = document.createElement('div');
+  dragHandle.classList.add('drag-handle');
+  const row1 = document.createElement('div');
+  row1.classList.add('dot-row');
+  const row2 = document.createElement('div');
+  row2.classList.add('dot-row');
+
+  for (let i = 0; i < 3; i++) {
+    const dot = document.createElement('span');
+    dot.classList.add('dot');
+    row1.appendChild(dot);
+  }
+
+  for (let i = 0; i < 3; i++) {
+    const dot = document.createElement('span');
+    dot.classList.add('dot');
+    row2.appendChild(dot);
+  }
+  
+  dragHandle.appendChild(row1);
+  dragHandle.appendChild(row2);
+  return dragHandle;
 }
