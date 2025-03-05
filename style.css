@@ -646,6 +646,7 @@ li.dragging {
   cursor: grabbing;
 }
 
+
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 6px;
