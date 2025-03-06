@@ -220,14 +220,14 @@ body {
 /* Container and Todo App Styles */
 .container {
   display: flex;
-  flex-wrap: nowrap;
   gap: 20px;
   padding: 10px;
-  overflow-x: auto; 
-  overflow-y: hidden;
+  overflow-x: hidden; 
+  width: 100%;
+  max-width: 100%;
+  white-space: nowrap; 
   align-items: flex-start;
 }
-
 
 .todo-app {
   position: relative;
