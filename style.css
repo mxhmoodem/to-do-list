@@ -249,6 +249,11 @@ body {
   scrollbar-color: #aaaaaa #f8f8f8;
 }
 
+.todo-app ul,
+.todo-app ul li {
+  white-space: normal;
+}
+
 /* Header Styles */
 .header-row {
   position: relative;
