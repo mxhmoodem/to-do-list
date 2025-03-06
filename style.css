@@ -650,7 +650,7 @@ li.dragging {
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 6px;
-  height: 6px;
+  height: 9px;
 }
 
 ::-webkit-scrollbar-track {
