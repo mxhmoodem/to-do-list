@@ -314,7 +314,6 @@ function addAddDueDateButton(li) {
 let dragSrcEl = null;
 let isDraggingHandle = false;
 
-// List container drag handlers (unchanged)
 function handleDragStart(e) {
   if (!isDraggingHandle) {
     e.preventDefault();
@@ -322,13 +321,19 @@ function handleDragStart(e) {
   }
   draggedList = this;
   this.classList.add('dragging');
-  document.body.style.cursor = 'grabbing';
+  document.body.classList.add('dragging-list'); 
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', '');
   e.dataTransfer.setDragImage(this, 10, 10);
-  const dropIndicator = document.createElement('div');
-  dropIndicator.classList.add('drop-indicator');
-  document.querySelector('.container').appendChild(dropIndicator);
+
+  const container = document.querySelector('.container');
+  let dropIndicator = container.querySelector('.drop-indicator');
+  if (!dropIndicator) {
+    dropIndicator = document.createElement('div');
+    dropIndicator.classList.add('drop-indicator');
+    container.appendChild(dropIndicator);
+  }
+  dropIndicator.style.display = 'block';
 }
 
 function handleDragOver(e) {
@@ -341,27 +346,33 @@ function handleDrop(e) {
   e.preventDefault();
   const container = document.querySelector('.container');
   const dropTarget = determineDropTarget(e.clientX);
+
   if (dropTarget) {
-    container.insertBefore(draggedList, dropTarget);
-  } else {
-    container.appendChild(draggedList);
+    if (dropTarget.position === 'start' || dropTarget.position === 'before') {
+      container.insertBefore(draggedList, dropTarget.target || container.firstChild);
+    } else if (dropTarget.position === 'between') {
+      container.insertBefore(draggedList, dropTarget.next);
+    } else if (dropTarget.position === 'after') {
+      container.appendChild(draggedList);
+    }
+    updateSidebarList();
+    saveAllLists();
   }
+
   const dropIndicator = container.querySelector('.drop-indicator');
-  if (dropIndicator) dropIndicator.remove();
-  updateSidebarList();
-  saveAllLists();
+  if (dropIndicator) dropIndicator.style.display = 'none';
 }
 
 function handleDragEnd(e) {
+  console.log('Drag end triggered');
   this.classList.remove('dragging');
-  document.body.style.cursor = 'default';
+  document.body.classList.remove('dragging-list');
   const dropIndicator = document.querySelector('.drop-indicator');
-  if (dropIndicator) dropIndicator.remove();
+  if (dropIndicator) dropIndicator.style.display = 'none';
   draggedList = null;
   isDraggingHandle = false;
 }
 
-// Task-specific drag handlers
 function handleTaskDragStart(e) {
   dragSrcEl = this;
   e.dataTransfer.effectAllowed = 'move';
@@ -387,7 +398,6 @@ function handleTaskDrop(e) {
 
 function handleTaskDragEnd(e) {
   this.classList.remove('dragging');
-  document.body.style.cursor = 'default';
   saveAllLists();
 }
 
@@ -419,48 +429,43 @@ function showTaskData() {
 // =========================================
 
 function createList() {
-  // Create the main todo list container
   const newTodoApp = document.createElement('div');
   newTodoApp.classList.add('todo-app');
 
-
-  // Create the header row with drag handle, title, and close button
   const headerRow = document.createElement('div');
   headerRow.classList.add('header-row');
 
-  const dragHandle = createDragHandle(); // Assumes a function to create a drag handle
+  const dragHandle = createDragHandle(); 
   dragHandle.addEventListener('mousedown', () => {
     console.log('Mouse down on drag handle');
     isDraggingHandle = true;
   });
   newTodoApp.insertBefore(dragHandle, newTodoApp.firstChild);
 
-  // Editable title
   const newTitle = document.createElement('h2');
   newTitle.contentEditable = 'true';
   newTitle.innerText = 'New List';
   newTitle.classList.add('header-title');
 
   newTitle.addEventListener('blur', function() {
-    saveAllLists(); // Save changes when focus is lost
+    saveAllLists();
   });
 
   newTitle.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
       event.preventDefault();
-      newTitle.blur(); // Exit editing on Enter key
+      newTitle.blur();
     }
   });
 
-  // Close button with tooltip
   const closeBtnWrapper = document.createElement('div');
   closeBtnWrapper.classList.add('close-container-wrapper');
 
   const closeBtn = document.createElement('span');
-  closeBtn.innerHTML = "\u00D7"; // Unicode for '×'
+  closeBtn.innerHTML = "\u00D7";
   closeBtn.classList.add('close-container');
   closeBtn.addEventListener('click', function() {
-    removeList(this); // Remove the list when clicked
+    removeList(this);
   });
 
   const tooltip = document.createElement('span');
@@ -474,7 +479,6 @@ function createList() {
   headerRow.appendChild(closeBtnWrapper);
   newTodoApp.appendChild(headerRow);
 
-  // Input row for adding tasks
   const rowDiv = document.createElement('div');
   rowDiv.classList.add('row');
 
@@ -488,43 +492,37 @@ function createList() {
   rowDiv.appendChild(newInput);
   rowDiv.appendChild(addButton);
 
-  // Task list container
   const newUl = document.createElement('ul');
 
   newTodoApp.appendChild(rowDiv);
   newTodoApp.appendChild(newUl);
 
-  // Enable dragging the entire list
   newTodoApp.setAttribute('draggable', 'true');
-  newTodoApp.addEventListener('dragstart', handleDragStart); // Drag start handler
-  newTodoApp.addEventListener('dragend', handleDragEnd);   // Drag end handler
+  newTodoApp.addEventListener('dragstart', handleDragStart);
+  newTodoApp.addEventListener('dragend', handleDragEnd); 
 
-  // Append to the main container
   const container = document.querySelector('.container');
   container.appendChild(newTodoApp);
 
-  // Event listeners for adding tasks
   addButton.addEventListener('click', () => {
-    addTaskToList(newInput, newUl); // Add task on button click
+    addTaskToList(newInput, newUl);
     saveAllLists();
   });
 
   newInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-      addTaskToList(newInput, newUl); // Add task on Enter key
+      addTaskToList(newInput, newUl);
       saveAllLists();
     }
   });
 
-  // Handle clicks on the task list (e.g., toggling tasks)
   newUl.addEventListener('click', (e) => {
     handleListClick(e, newUl);
     saveAllLists();
   });
 
-  // Update UI and save state
-  updateContainerCloseButtons(); // Update close buttons if applicable
-  saveAllLists(); // Initial save
+  updateContainerCloseButtons();
+  saveAllLists();
 }
 
 function addTaskToList(inputElement, ulElement) {
@@ -641,11 +639,9 @@ function loadAllLists() {
 }
 
 function createListFromSaved(title, tasks) {
-  // Create the main todo list container
   const newTodoApp = document.createElement('div');
   newTodoApp.classList.add('todo-app');
 
-  // Create and insert the drag handle at the top
   const dragHandle = createDragHandle();
   dragHandle.addEventListener('mousedown', () => {
     console.log('Mouse down on drag handle');
@@ -653,36 +649,33 @@ function createListFromSaved(title, tasks) {
   });
   newTodoApp.insertBefore(dragHandle, newTodoApp.firstChild);
 
-  // Create the header row with drag handle, title, and close button
   const headerRow = document.createElement('div');
   headerRow.classList.add('header-row');
 
-  // Editable title initialized with saved title
   const newTitle = document.createElement('h2');
   newTitle.contentEditable = 'true';
   newTitle.innerText = title;
   newTitle.classList.add('header-title');
 
   newTitle.addEventListener('blur', function() {
-    saveAllLists(); // Save changes when focus is lost
+    saveAllLists(); 
   });
 
   newTitle.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
       event.preventDefault();
-      this.blur(); // Exit editing on Enter key
+      this.blur(); 
     }
   });
 
-  // Close button with tooltip
   const closeBtnWrapper = document.createElement('div');
   closeBtnWrapper.classList.add('close-container-wrapper');
 
   const closeBtn = document.createElement('span');
-  closeBtn.innerHTML = "\u00D7"; // Unicode for '×'
+  closeBtn.innerHTML = "\u00D7"; 
   closeBtn.classList.add('close-container');
   closeBtn.addEventListener('click', function() {
-    removeList(this); // Remove the list when clicked
+    removeList(this); 
     saveAllLists();
   });
 
@@ -697,7 +690,6 @@ function createListFromSaved(title, tasks) {
   headerRow.appendChild(closeBtnWrapper);
   newTodoApp.appendChild(headerRow);
 
-  // Input row for adding tasks
   const rowDiv = document.createElement('div');
   rowDiv.classList.add('row');
 
@@ -711,49 +703,42 @@ function createListFromSaved(title, tasks) {
   rowDiv.appendChild(newInput);
   rowDiv.appendChild(addButton);
 
-  // Task list container initialized with saved tasks
   const newUl = document.createElement('ul');
-  newUl.innerHTML = tasks; // Load saved tasks
+  newUl.innerHTML = tasks; 
 
   newTodoApp.appendChild(rowDiv);
   newTodoApp.appendChild(newUl);
 
-  // Enable dragging the entire list
   newTodoApp.setAttribute('draggable', 'true');
-  newTodoApp.addEventListener('dragstart', handleDragStart); // Drag start handler
-  newTodoApp.addEventListener('dragend', handleDragEnd);   // Drag end handler
+  newTodoApp.addEventListener('dragstart', handleDragStart);
+  newTodoApp.addEventListener('dragend', handleDragEnd);
 
-  // Append to the main container
   const container = document.querySelector('.container');
   container.appendChild(newTodoApp);
 
-  // Event listeners for adding tasks
   addButton.addEventListener('click', () => {
-    addTaskToList(newInput, newUl); // Add task on button click
+    addTaskToList(newInput, newUl);
     saveAllLists();
   });
 
   newInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-      addTaskToList(newInput, newUl); // Add task on Enter key
+      addTaskToList(newInput, newUl);
       saveAllLists();
     }
   });
 
-  // Handle clicks on the task list (e.g., toggling tasks)
   newUl.addEventListener('click', (e) => {
     handleListClick(e, newUl);
     saveAllLists();
   });
 
-  // Add drag-and-drop handlers to existing list items
   const listItems = newUl.querySelectorAll('li');
   listItems.forEach(li => {
-    addDragAndDropHandlers(li); // Enable dragging for saved tasks
+    addDragAndDropHandlers(li);
   });
 
-  // Update UI
-  updateContainerCloseButtons(); // Update close buttons if applicable
+  updateContainerCloseButtons();
 }
 
 function showConfirmationModal() {
@@ -955,51 +940,73 @@ function updateAllDueDates() {
 function determineDropTarget(x) {
   const container = document.querySelector('.container');
   const lists = Array.from(container.querySelectorAll('.todo-app')).filter(list => list !== draggedList);
-  if (lists.length === 0) return null;
+  const containerRect = container.getBoundingClientRect();
+  const EDGE_THRESHOLD = 20;
 
-  let overList = null;
-  for (let list of lists) {
-    const rect = list.getBoundingClientRect();
-    if (rect.left < x && x < rect.right) {
-      overList = list;
-      break;
+  if (lists.length === 0) {
+    return { position: 'start', target: null };
+  }
+
+  if (x < containerRect.left + EDGE_THRESHOLD) {
+    return { position: 'before', target: lists[0] };
+  }
+
+  if (x > containerRect.right - EDGE_THRESHOLD) {
+    return { position: 'after', target: lists[lists.length - 1] };
+  }
+
+  for (let i = 0; i < lists.length - 1; i++) {
+    const currentList = lists[i];
+    const nextList = lists[i + 1];
+    const currentRect = currentList.getBoundingClientRect();
+    const nextRect = nextList.getBoundingClientRect();
+    const gapStart = currentRect.right;
+    const gapEnd = nextRect.left;
+
+    if (x > gapStart && x < gapEnd) {
+      return { position: 'between', target: currentList, next: nextList };
     }
   }
-  if (overList) {
-    const rect = overList.getBoundingClientRect();
-    const midpoint = rect.left + rect.width / 2;
-    if (x < midpoint) {
-      return overList; 
-    } else {
-      const index = lists.indexOf(overList);
-      return index < lists.length - 1 ? lists[index + 1] : null; 
-    }
-  } else {
-    if (x < lists[0].getBoundingClientRect().left) {
-      return lists[0]; 
-    } else if (x > lists[lists.length - 1].getBoundingClientRect().right) {
-      return null;
-    }
-  }
-  return null;
+
+  return null; 
 }
 
 function showDropIndicator(dropTarget) {
   const container = document.querySelector('.container');
-  const dropIndicator = container.querySelector('.drop-indicator');
-  if (dropIndicator) {
-    const todoApps = container.querySelectorAll('.todo-app');
-    let maxHeight = 0;
-    todoApps.forEach(app => {
-      const height = app.offsetHeight;
-      if (height > maxHeight) maxHeight = height;
-    });
-    dropIndicator.style.height = `${maxHeight}px`;
-    if (dropTarget) {
-      container.insertBefore(dropIndicator, dropTarget);
-    } else {
-      container.appendChild(dropIndicator);
-    }
+  const dropIndicator = container.querySelector('.drop-indicator') || document.createElement('div');
+  
+  if (!dropIndicator.classList.contains('drop-indicator')) {
+    dropIndicator.classList.add('drop-indicator');
+    container.appendChild(dropIndicator);
+  }
+
+  const todoApps = container.querySelectorAll('.todo-app');
+  let maxHeight = 0;
+  todoApps.forEach(app => {
+    const height = app.offsetHeight;
+    if (height > maxHeight) maxHeight = height;
+  });
+  dropIndicator.style.height = `${maxHeight}px`;
+
+  if (!dropTarget) {
+    dropIndicator.style.display = 'none';
+    return;
+  }
+
+  const containerRect = container.getBoundingClientRect();
+
+  if (dropTarget.position === 'start' || dropTarget.position === 'before') {
+    dropIndicator.style.left = '10px';
+    dropIndicator.style.display = 'block';
+  } else if (dropTarget.position === 'between') {
+    const currentRect = dropTarget.target.getBoundingClientRect();
+    const nextRect = dropTarget.next.getBoundingClientRect();
+    const gapCenter = currentRect.right + (nextRect.left - currentRect.right) / 2;
+    dropIndicator.style.left = `${gapCenter - containerRect.left}px`;
+    dropIndicator.style.display = 'block';
+  } else if (dropTarget.position === 'after') {
+    dropIndicator.style.left = `calc(100% - 12px)`;
+    dropIndicator.style.display = 'block';
   }
 }
 
