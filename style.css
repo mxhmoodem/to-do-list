@@ -266,6 +266,14 @@ body {
   white-space: normal;
 }
 
+.todo-app .close-container-wrapper {
+  display: none !important;
+}
+
+.todo-app:hover .close-container-wrapper {
+  display: inline-block !important;
+}
+
 /* Header Styles */
 .header-row {
   position: relative;
