@@ -247,6 +247,7 @@ body {
   padding: 0 20px 30px 30px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(209, 209, 209, 0.5);
+  cursor: default;
 }
 
 .todo-app:hover {
@@ -624,13 +625,19 @@ li.dragging {
   left: 50%;
   transform: translateX(-50%);
   top: 10px; 
-  cursor: grab;
   display: none;
   user-select: none; 
   z-index: 100;
+  cursor: move; 
+  cursor: -webkit-grab; 
+  cursor: -moz-grab;
+  cursor: grab;
 }
 
 .drag-handle:active {
+  cursor: move;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
   cursor: grabbing;
 }
 
@@ -662,18 +669,17 @@ li.dragging {
 }
 
 .todo-app.dragging {
-  cursor: grabbing !important;
+  cursor: move; 
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
   opacity: 0.5;
+  pointer-events: auto;
 }
 
-body.dragging-list {
-  cursor: grabbing !important;
+[draggable="true"] {
+  cursor: inherit !important;
 }
-
-body.dragging-list * {
-  cursor: grabbing !important;
-}
-
 
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
