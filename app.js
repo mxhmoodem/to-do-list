@@ -205,6 +205,8 @@ listContainer.addEventListener("click", function(e) {
 function editTask(li) {
   if (li.classList.contains("editing")) return;
 
+  li.setAttribute('draggable', 'false');
+
   let storedDueDate = li.dataset.dueDate || null;
   let dueDateDisplay = li.querySelector('.due-date-display');
   if (dueDateDisplay) {
@@ -295,6 +297,7 @@ function editTask(li) {
   }
 }
 
+
 function addAddDueDateButton(li) {
   let addDueDateBtn = document.createElement('button');
   addDueDateBtn.textContent = 'Add Due Date';
@@ -316,22 +319,25 @@ let isDraggingHandle = false;
 
 function handleDragStart(e) {
   if (!isDraggingHandle) {
-    e.preventDefault();
-    return;
+      e.preventDefault();
+      return;
   }
   draggedList = this;
   this.classList.add('dragging');
-  document.body.classList.add('dragging-list'); 
+  document.body.style.cursor = 'grabbing';
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', '');
-  e.dataTransfer.setDragImage(this, 10, 10);
+
+  const transparentImg = new Image();
+  transparentImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+  e.dataTransfer.setDragImage(transparentImg, 0, 0);
 
   const container = document.querySelector('.container');
   let dropIndicator = container.querySelector('.drop-indicator');
   if (!dropIndicator) {
-    dropIndicator = document.createElement('div');
-    dropIndicator.classList.add('drop-indicator');
-    container.appendChild(dropIndicator);
+      dropIndicator = document.createElement('div');
+      dropIndicator.classList.add('drop-indicator');
+      container.appendChild(dropIndicator);
   }
   dropIndicator.style.display = 'block';
 }
@@ -366,7 +372,8 @@ function handleDrop(e) {
 function handleDragEnd(e) {
   console.log('Drag end triggered');
   this.classList.remove('dragging');
-  document.body.classList.remove('dragging-list');
+  document.body.style.cursor = ''; 
+  this.style.cursor = ''; 
   const dropIndicator = document.querySelector('.drop-indicator');
   if (dropIndicator) dropIndicator.style.display = 'none';
   draggedList = null;
