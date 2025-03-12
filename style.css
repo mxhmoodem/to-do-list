@@ -270,8 +270,12 @@ body {
   display: none !important;
 }
 
-.todo-app:hover .close-container-wrapper {
+.todo-app:not(.single-list):hover .close-container-wrapper {
   display: inline-block !important;
+}
+
+.todo-app.single-list .close-container-wrapper {
+  display: none !important;
 }
 
 /* Header Styles */
