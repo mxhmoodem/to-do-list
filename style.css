@@ -359,6 +359,7 @@ ul li::before {
   background-position: center;
   top: 8px;
   left: 10px;
+  cursor: pointer;
 }
 
 ul li.checked {
@@ -382,6 +383,7 @@ ul li span {
   text-align: center;
   border-radius: 50%;
   transition: background-color 0.2s ease;
+  cursor: pointer;
 }
 
 ul li span:hover {
