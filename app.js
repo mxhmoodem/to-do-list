@@ -74,7 +74,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
   const initialTitle = initialHeaderRow.querySelector('h2');
   const dragHandle = createDragHandle();
   dragHandle.addEventListener('mousedown', () => {
-    console.log('Mouse down on drag handle');
     isDraggingHandle = true;
   });
   initialTodoApp.insertBefore(dragHandle, initialTodoApp.firstChild);
@@ -82,7 +81,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   initialTodoApp.addEventListener('dragstart', handleDragStart);
   initialTodoApp.addEventListener('dragend', handleDragEnd);
   const container = document.querySelector('.container');
-  container.addEventListener('dragover', handleDragOver);
+  document.addEventListener('dragover', handleDragOver);
   container.addEventListener('drop', handleDrop);
   setInterval(updateAllDueDates, 60000);
 });
@@ -343,7 +342,29 @@ function handleDragStart(e) {
 }
 
 function handleDragOver(e) {
-  e.preventDefault();
+  console.log('dragover', e.clientX, e.target);
+  const container = document.querySelector('.container');
+  const containerRect = container.getBoundingClientRect();
+  console.log('containerRect.left', containerRect.left);
+  console.log('scrollLeft', container.scrollLeft);
+
+  const isOverContainer = container.contains(e.target);
+  if (isOverContainer) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  }
+
+  const scrollMargin = 50;
+  const scrollSpeed = 20;
+
+  if (e.clientX < containerRect.left + scrollMargin) {
+    console.log('Should scroll left');
+    container.scrollLeft -= scrollSpeed;
+  } else if (e.clientX > containerRect.right - scrollMargin) {
+    console.log('Should scroll right');
+    container.scrollLeft += scrollSpeed;
+  }
+
   const dropTarget = determineDropTarget(e.clientX);
   showDropIndicator(dropTarget);
 }
@@ -370,7 +391,6 @@ function handleDrop(e) {
 }
 
 function handleDragEnd(e) {
-  console.log('Drag end triggered');
   this.classList.remove('dragging');
   document.body.style.cursor = ''; 
   this.style.cursor = ''; 
@@ -444,7 +464,6 @@ function createList() {
 
   const dragHandle = createDragHandle(); 
   dragHandle.addEventListener('mousedown', () => {
-    console.log('Mouse down on drag handle');
     isDraggingHandle = true;
   });
   newTodoApp.insertBefore(dragHandle, newTodoApp.firstChild);
@@ -577,21 +596,25 @@ function handleListClick(e, ulElement) {
 
 function updateContainerCloseButtons() {
   const apps = document.querySelectorAll('.todo-app');
+  
   if (apps.length === 1) {
     const onlyApp = apps[0];
+    onlyApp.classList.add('single-list');
     const closeWrapper = onlyApp.querySelector('.close-container-wrapper');
     if (closeWrapper) {
       closeWrapper.style.display = 'none';
     }
   } else {
     apps.forEach(app => {
+      app.classList.remove('single-list');
       const closeWrapper = app.querySelector('.close-container-wrapper');
       if (closeWrapper) {
-        closeWrapper.style.display = 'inline-block';
+        closeWrapper.style.display = '';
       }
     });
   }
 }
+
 
 let currentListToDelete = null;
 
@@ -651,7 +674,6 @@ function createListFromSaved(title, tasks) {
 
   const dragHandle = createDragHandle();
   dragHandle.addEventListener('mousedown', () => {
-    console.log('Mouse down on drag handle');
     isDraggingHandle = true;
   });
   newTodoApp.insertBefore(dragHandle, newTodoApp.firstChild);
@@ -797,7 +819,6 @@ var feedbackbtn = document.getElementById("feedbackBtn");
 var feedbackspan = document.getElementsByClassName("close")[0];
 
 feedbackbtn.onclick = function() {
-  console.log("Feedback button clicked");
   feedbackmodal.style.display = "block";
   setTimeout(() => {
     feedbackmodal.classList.add("show");
