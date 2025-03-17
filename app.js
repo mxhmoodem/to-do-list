@@ -932,9 +932,9 @@ function displayDueDate(taskElement, date) {
   let currentDate = new Date();
   currentDate.setHours(0,0,0,0);
   if (dueDateObj < currentDate) {
-    dueDateDisplay.style.color = 'red';
+    dueDateDisplay.classList.add('overdue');
   } else {
-    dueDateDisplay.style.color = '';
+    dueDateDisplay.classList.remove('overdue');
   }
 
   taskElement.dataset.dueDate = date;
@@ -952,9 +952,9 @@ function updateAllDueDates() {
       const dueDateDisplay = task.querySelector('.due-date-display');
       if (dueDateDisplay) {
         if (dueDateObj < currentDate) {
-          dueDateDisplay.style.color = 'red';
+          dueDateDisplay.classList.add('overdue');
         } else {
-          dueDateDisplay.style.color = '';
+          dueDateDisplay.classList.remove('overdue');
         }
       }
     }
