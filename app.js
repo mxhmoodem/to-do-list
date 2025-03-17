@@ -9,12 +9,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
     userNameElement.innerText = savedName;
     userNameElement.style.color = 'inherit';
     userNameElement.style.fontStyle = 'normal';
-    userNameElement.style.fontWeight = 'normal';
   } else {
     userNameElement.innerText = '{insert your name}';
-    userNameElement.style.color = 'gray';
+    userNameElement.style.color = '#888'; 
     userNameElement.style.fontStyle = 'italic';
-    userNameElement.style.fontWeight = 'normal';
   }
 
   userNameElement.addEventListener('focus', function() {
@@ -68,6 +66,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   loadAllLists();
   updateSidebarList();
   updateAllDueDates();
+  attachNameClickHandler(userNameElement);
 
   const initialTodoApp = document.querySelector('.todo-app');
   const initialHeaderRow = initialTodoApp.querySelector('.header-row');
@@ -96,17 +95,49 @@ function toggleSidebar() {
   mainContent.classList.toggle('sidebar-collapsed');
 }
 
-function saveName(element) {
-  const name = element.innerText.trim();
-  if (name === '' || name === '{insert your name}') {
-    element.innerText = '{insert your name}';
-    element.style.color = 'gray';
-    element.style.fontStyle = 'italic';
+function saveName(input) {
+  const name = input.value.trim();
+  const newSpan = document.createElement('span');
+  newSpan.id = 'user-name';
+
+  if (name === '') {
+    newSpan.innerText = '{insert your name}';
+    newSpan.style.color = '#888';
+    newSpan.style.fontStyle = 'italic';
   } else {
-    element.style.color = 'inherit';
-    element.style.fontStyle = 'normal';
+    newSpan.innerText = name;
+    newSpan.style.color = 'inherit';
+    newSpan.style.fontStyle = 'normal';
   }
-  localStorage.setItem('userName', element.innerText);
+
+  input.parentNode.replaceChild(newSpan, input);
+  localStorage.setItem('userName', name);
+
+  attachNameClickHandler(newSpan);
+}
+
+function attachNameClickHandler(span) {
+  span.addEventListener('click', function() {
+    const currentName = span.innerText;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = currentName === '{insert your name}' ? '' : currentName;
+    input.classList.add('name-input');
+
+    span.parentNode.replaceChild(input, span);
+    input.focus();
+
+    input.addEventListener('blur', function() {
+      saveName(input);
+    });
+
+    input.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault(); 
+        input.blur(); 
+      }
+    });
+  });
 }
 
 function displayCurrentDate() {
