@@ -111,14 +111,20 @@ body {
   color: var(--secondary-color);
 }
 
-#user-name {
-  display: inline-block;
-  border: none;
+.name-input {
+  font-size: inherit; 
+  font-family: inherit;
+  border: 1px solid #ccc; 
+  padding: 2px 5px;
+  border-radius: 3px;
   outline: none;
-  color: var(--medium-gray);
-  font-style: italic;
-  cursor: text;
-  margin-top: 5px;
+  display: inline-block;
+  width: auto;
+  min-width: 100px; 
+}
+
+#user-name {
+  cursor: pointer;
 }
 
 #user-name:focus {
@@ -471,6 +477,10 @@ ul li span:hover {
 }
 
 .due-date-display[style*="color: red"] {
+  color: var(--error-color);
+}
+
+.overdue {
   color: var(--error-color);
 }
 
