@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #226ff5;         /* Targets buttons like "Add Task", "Create New List", and feedback button */
+  --primary-color: #226ff5;         /* Targets buttons like "Add Task", "Create New List", and "Feedback" button */
   --secondary-color: #002765;       /* Targets top banner background and headers in the sidebar */
   --background-color: #f8fafd;      /* Targets main background for body, sidebar, and list item hover states */
   --primary-hover: #0944db;         /* Targets hover state for primary buttons */
