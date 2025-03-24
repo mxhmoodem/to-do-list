@@ -21,12 +21,12 @@
   --indicator-color: #0000ff;       /* Targets drop indicator */
   --scrollbar-thumb-hover: #666666; /* Targets scrollbar thumb hover state */
   --hover-light: #e0e0e0;           /* Targets toggle button text hover and close container background hover */
-  --shadow-dark: 0, 0, 0;             /* Targets RGB values for shadows and modal overlay */
-  --shadow-light: 209, 209, 209;      /* Targets RGB values for todo app shadows */
-  --tooltip-bg: 145, 145, 145;        /* Targets RGB values for tooltip background */
-  --modal-close-color: #aaa;        /* Targets modal close button */
-  --black: #000;                    /* Targets modal close button on hover */
-  --shadow-medium: 59, 59, 59;        /* Targets RGB values for create list button shadow */
+  --shadow-dark: 0, 0, 0;            /* Targets RGB values for shadows and modal overlay */
+  --shadow-light: 209, 209, 209;     /* Targets RGB values for todo app shadows */
+  --tooltip-bg: 145, 145, 145;       /* Targets RGB values for tooltip background */
+  --modal-close-color: #aaa;         /* Targets modal close button */
+  --black: #000;                     /* Targets modal close button on hover */
+  --shadow-medium: 59, 59, 59;       /* Targets RGB values for create list button shadow */
 }
 
 * {
