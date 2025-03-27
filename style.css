@@ -2,7 +2,7 @@
   --primary-color: #226ff5;         /* Targets buttons like "Add Task", "Create New List", and "Feedback" button */
   --secondary-color: #002765;       /* Targets top banner background and headers in the sidebar */
   --background-color: #f8fafd;      /* Targets main background for body, sidebar, and list item hover states */
-  --primary-hover: #0944db;         /* Targets hover state for primary buttons */
+  --primary-hover: #0944dc;         /* Targets hover state for primary buttons */
   --white: #fff;                    /* Targets text (e.g., top banner, buttons) and backgrounds (e.g., todo app, modal) */
   --light-gray: #dedede;            /* Targets borders (e.g., sidebar, list items) */
   --medium-gray: #808080;           /* Targets placeholder text (e.g., user name) */
