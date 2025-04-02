@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   document.addEventListener('dragover', handleDragOver);
   container.addEventListener('drop', handleDrop);
   setInterval(updateAllDueDates, 60000);
+  setInterval(displayCurrentDate, 60000);
 });
 
 // ==========================================
