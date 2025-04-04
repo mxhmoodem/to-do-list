@@ -369,6 +369,11 @@ button:hover {
   background: var(--primary-hover);
 }
 
+button.sending, button:disabled.sending {
+  cursor: default !important;
+  background: var(--primary-hover) !important;
+}
+
 /* List Item Styles */
 ul li {
   list-style: none;
