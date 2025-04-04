@@ -877,11 +877,16 @@ document.getElementById("feedbackForm").addEventListener("submit", function(even
   event.preventDefault();
 
   var feedbackText = document.getElementById("feedbackText").value.trim();
+  var submitButton = this.querySelector('button[type="submit"]');
 
   if (feedbackText === "") {
     alert("Please enter some feedback.");
     return;
   }
+
+  submitButton.disabled = true;
+  submitButton.textContent = "Sending...";
+  submitButton.classList.add("sending");
 
   var templateParams = {
     feedback: feedbackText
@@ -893,9 +898,15 @@ document.getElementById("feedbackForm").addEventListener("submit", function(even
       alert("Feedback sent successfully!");
       feedbackmodal.style.display = "none";
       document.getElementById("feedbackText").value = "";
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit";
+      submitButton.classList.remove("sending");
     }, function(error) {
       console.log("FAILED...", error);
       alert("Failed to send feedback. Please try again later.");
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit";
+      submitButton.classList.remove("sending");
     });
 });
 
