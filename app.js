@@ -849,27 +849,52 @@ window.addEventListener("click", function(event) {
 var feedbackmodal = document.getElementById("feedbackModal");
 var feedbackbtn = document.getElementById("feedbackBtn");
 var feedbackspan = document.getElementsByClassName("close")[0];
+var charCounter = document.getElementById("charCount");
+var feedbackText = document.getElementById("feedbackText");
+var successMessage = document.getElementById("successMessage");
+var errorMessage = document.getElementById("errorMessage");
+
+feedbackText.addEventListener("input", function() {
+  const count = this.value.length;
+  charCounter.textContent = count;
+  
+  if (count > 400) {
+    charCounter.style.color = "#ff9900";
+  } else if (count > 450) {
+    charCounter.style.color = "#ff0000";
+  } else {
+    charCounter.style.color = "";
+  }
+});
 
 feedbackbtn.onclick = function() {
   feedbackmodal.style.display = "block";
   setTimeout(() => {
     feedbackmodal.classList.add("show");
   }, 10);
+  
+  document.getElementById("feedbackForm").reset();
+  charCounter.textContent = "0";
+  charCounter.style.color = "";
+  successMessage.style.display = "none";
+  errorMessage.style.display = "none";
+  feedbackText.focus();
 };
 
 feedbackspan.onclick = function() {
+  closeFeedbackModal();
+};
+
+function closeFeedbackModal() {
   feedbackmodal.classList.remove("show");
   setTimeout(() => {
     feedbackmodal.style.display = "none";
   }, 300);
-};
+}
 
 window.addEventListener("click", function(event) {
   if (event.target == feedbackmodal) {
-    feedbackmodal.classList.remove("show");
-    setTimeout(() => {
-      feedbackmodal.style.display = "none";
-    }, 300);
+    closeFeedbackModal();
   }
 });
 
@@ -877,10 +902,15 @@ document.getElementById("feedbackForm").addEventListener("submit", function(even
   event.preventDefault();
 
   var feedbackText = document.getElementById("feedbackText").value.trim();
+  var feedbackType = document.querySelector('input[name="feedbackType"]:checked').value;
   var submitButton = this.querySelector('button[type="submit"]');
 
+  successMessage.style.display = "none";
+  errorMessage.style.display = "none";
+
   if (feedbackText === "") {
-    alert("Please enter some feedback.");
+    errorMessage.textContent = "Please enter some feedback.";
+    errorMessage.style.display = "block";
     return;
   }
 
@@ -889,26 +919,42 @@ document.getElementById("feedbackForm").addEventListener("submit", function(even
   submitButton.classList.add("sending");
 
   var templateParams = {
-    feedback: feedbackText
+    feedback: feedbackText,
+    feedbackType: feedbackType
   };
 
   emailjs.send("service_fh0bnws", "template_3t4v4im", templateParams)
     .then(function(response) {
       console.log("SUCCESS!", response.status, response.text);
-      alert("Feedback sent successfully!");
-      feedbackmodal.style.display = "none";
+      
+      successMessage.style.display = "block";
+      
       document.getElementById("feedbackText").value = "";
+      charCounter.textContent = "0";
+      
       submitButton.disabled = false;
-      submitButton.textContent = "Submit";
+      submitButton.textContent = "Submit Feedback";
       submitButton.classList.remove("sending");
+      
+      setTimeout(() => {
+        closeFeedbackModal();
+      }, 2000);
     }, function(error) {
       console.log("FAILED...", error);
-      alert("Failed to send feedback. Please try again later.");
+      
+      errorMessage.textContent = "Failed to send feedback. Please try again later.";
+      errorMessage.style.display = "block";
+      
       submitButton.disabled = false;
-      submitButton.textContent = "Submit";
+      submitButton.textContent = "Submit Feedback";
       submitButton.classList.remove("sending");
     });
 });
+
+
+// =========================================
+//        DUE DATE FUNCTIONALITY
+// =========================================
 
 if (!taskElement.querySelector('.add-due-date-btn')) {
   const addDueDateBtn = document.createElement('button');
@@ -919,10 +965,6 @@ if (!taskElement.querySelector('.add-due-date-btn')) {
   });
   taskElement.appendChild(addDueDateBtn);
 }
-
-// =========================================
-//        DUE DATE FUNCTIONALITY
-// =========================================
 
 function formatDate(dateObj) {
   const day = dateObj.getDate();
