@@ -77,10 +77,23 @@
   <div id="feedbackModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <h2>Feedback</h2>
+      <h2>Share Your Feedback</h2>
       <form id="feedbackForm">
-        <textarea id="feedbackText" name="feedback" rows="5" cols="30" placeholder="Write your feedback here..."></textarea>
-        <button type="submit">Submit</button>
+        <div class="feedback-type">
+          <input type="radio" id="suggestion" name="feedbackType" value="Suggestion" checked>
+          <label for="suggestion">Suggestion</label>
+          
+          <input type="radio" id="bug" name="feedbackType" value="Bug Report">
+          <label for="bug">Bug Report</label>
+          
+          <input type="radio" id="general" name="feedbackType" value="General">
+          <label for="general">General</label>
+        </div>
+        <textarea id="feedbackText" name="feedback" placeholder="Please share your thoughts here..." maxlength="500"></textarea>
+        <div class="char-counter"><span id="charCount">0</span>/500 characters</div>
+        <button type="submit">Submit Feedback</button>
+        <div class="success-message" id="successMessage">Thank you for your feedback!</div>
+        <div class="error-message" id="errorMessage">Failed to send feedback. Please try again.</div>
       </form>
     </div>
   </div>
