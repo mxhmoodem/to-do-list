@@ -1,8 +1,8 @@
 :root {
-  --primary-color: #226ff5;         /* Targets buttons like "Add Task", "Create New List", and "Feedback" button */
+  --primary-color: #226ff5;         /* Targets buttons like "Add Task", "Create New List", and feedback button */
   --secondary-color: #002765;       /* Targets top banner background and headers in the sidebar */
   --background-color: #f8fafd;      /* Targets main background for body, sidebar, and list item hover states */
-  --primary-hover: #0944dc;         /* Targets hover state for primary buttons */
+  --primary-hover: #0944db;         /* Targets hover state for primary buttons */
   --white: #fff;                    /* Targets text (e.g., top banner, buttons) and backgrounds (e.g., todo app, modal) */
   --light-gray: #dedede;            /* Targets borders (e.g., sidebar, list items) */
   --medium-gray: #808080;           /* Targets placeholder text (e.g., user name) */
@@ -21,12 +21,12 @@
   --indicator-color: #0000ff;       /* Targets drop indicator */
   --scrollbar-thumb-hover: #666666; /* Targets scrollbar thumb hover state */
   --hover-light: #e0e0e0;           /* Targets toggle button text hover and close container background hover */
-  --shadow-dark: 0, 0, 0;            /* Targets RGB values for shadows and modal overlay */
-  --shadow-light: 209, 209, 209;     /* Targets RGB values for todo app shadows */
-  --tooltip-bg: 145, 145, 145;       /* Targets RGB values for tooltip background */
-  --modal-close-color: #aaa;         /* Targets modal close button */
-  --black: #000;                     /* Targets modal close button on hover */
-  --shadow-medium: 59, 59, 59;       /* Targets RGB values for create list button shadow */
+  --shadow-dark: 0, 0, 0;             /* Targets RGB values for shadows and modal overlay */
+  --shadow-light: 209, 209, 209;      /* Targets RGB values for todo app shadows */
+  --tooltip-bg: 145, 145, 145;        /* Targets RGB values for tooltip background */
+  --modal-close-color: #aaa;        /* Targets modal close button */
+  --black: #000;                    /* Targets modal close button on hover */
+  --shadow-medium: 59, 59, 59;        /* Targets RGB values for create list button shadow */
 }
 
 * {
@@ -576,32 +576,33 @@ ul li span:hover {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(var(--shadow-dark), 0.5);
+  background-color: rgba(var(--shadow-dark), 0.7);
   opacity: 0;
   transition: opacity 0.3s ease;
-  justify-content: center;
-  align-items: center;
 }
 
 .modal.show {
-  display: flex;
   opacity: 1;
 }
 
 .modal-content {
   background-color: var(--white);
-  margin: 20% auto;
   padding: 30px;
-  border-radius: 10px;
-  width: 300px;
+  border-radius: 15px;
+  width: 400px;
+  max-width: 90%;
   text-align: center;
   font-size: 18px;
-  transform: scale(0.7);
+  transform: translate(-50%, -50%) scale(0.7);
   transition: transform 0.3s ease;
+  box-shadow: 0 5px 25px rgba(var(--shadow-dark), 0.2);
+  position: absolute;
+  top: 50%;
+  left: 50%;
 }
 
 .modal.show .modal-content {
-  transform: scale(1);
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .modal-buttons {
@@ -638,6 +639,7 @@ ul li span:hover {
   float: right;
   font-size: 28px;
   font-weight: bold;
+  transition: color 0.2s ease;
 }
 
 .close:hover,
@@ -647,24 +649,104 @@ ul li span:hover {
   cursor: pointer;
 }
 
-textarea {
+/* Feedback Modal Specific Styles */
+#feedbackModal h2 {
+  margin-bottom: 20px;
+  color: var(--secondary-color);
+  text-align: left;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+#feedbackForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#feedbackText {
   width: 100%;
-  margin-bottom: 10px;
+  min-height: 120px;
+  margin-bottom: 20px;
   resize: vertical;
-  margin-top: 10px;
-  padding: 5px;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid var(--light-gray);
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
 }
 
-button[type="submit"] {
-  background-color: var(--primary-color);
-  color: var(--white);
-  padding: 10px 20px;
-  border: none;
+#feedbackText:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(34, 111, 245, 0.1);
+}
+
+#feedbackForm button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.feedback-type {
+  display: flex;
+  width: 100%;
+  margin-bottom: 20px;
+  justify-content: space-between;
+}
+
+.feedback-type label {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  border: 1px solid var(--light-gray);
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  margin: 0 5px;
 }
 
-button[type="submit"]:hover {
-  background-color: var(--primary-hover);
+.feedback-type input[type="radio"] {
+  display: none;
+}
+
+.feedback-type input[type="radio"]:checked + label {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.char-counter {
+  align-self: flex-end;
+  font-size: 12px;
+  color: var(--due-date-color);
+  margin-bottom: 10px;
+}
+
+.success-message, .error-message {
+  display: none;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
 }
 
 /* Drag and Drop Styles */
