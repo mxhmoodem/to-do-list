@@ -1147,3 +1147,206 @@ function createDragHandle() {
   dragHandle.appendChild(row2);
   return dragHandle;
 }
+
+
+// =========================================
+//        MOBILE SWIPE NAVIGATION
+// =========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+  const container = document.querySelector('.container');
+  const isMobile = window.innerWidth <= 768;
+  let swipeIndicators, currentListIndex = 0;
+
+  function initMobileSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.querySelector('.main-content');
+    
+    if (window.innerWidth <= 768) {
+      sidebar.classList.add('collapsed');
+      mainContent.classList.add('sidebar-collapsed');
+    }
+  }
+
+  initMobileSidebar();
+
+  window.addEventListener('resize', function() {
+    if (window.innerWidth <= 768) {
+      initMobileSidebar();
+    }
+  });
+  
+  function setupMobileView() {
+    if (window.innerWidth <= 768) {
+      if (!document.querySelector('.swipe-indicator')) {
+        const todoApps = container.querySelectorAll('.todo-app');
+      
+        swipeIndicators = document.createElement('div');
+        swipeIndicators.className = 'swipe-indicator';
+        document.querySelector('.main-content').appendChild(swipeIndicators);
+        
+        todoApps.forEach((_, index) => {
+          const dot = document.createElement('div');
+          dot.className = 'indicator-dot';
+          if (index === 0) dot.classList.add('active');
+          dot.addEventListener('click', () => scrollToList(index));
+          swipeIndicators.appendChild(dot);
+        });
+        
+        const leftArrow = document.createElement('div');
+        leftArrow.className = 'swipe-arrow swipe-arrow-left';
+        leftArrow.addEventListener('click', () => navigateList('prev'));
+        container.appendChild(leftArrow);
+        
+        const rightArrow = document.createElement('div');
+        rightArrow.className = 'swipe-arrow swipe-arrow-right';
+        rightArrow.addEventListener('click', () => navigateList('next'));
+        container.appendChild(rightArrow);
+        
+        setTimeout(() => {
+          const firstList = container.querySelector('.todo-app');
+          if (firstList) {
+            container.scrollLeft = 0;
+            updateIndicators(0);
+          }
+        }, 100);
+      }
+    } else {
+      const indicators = document.querySelector('.swipe-indicator');
+      if (indicators) indicators.remove();
+      
+      const arrows = document.querySelectorAll('.swipe-arrow');
+      arrows.forEach(arrow => arrow.remove());
+    }
+  }
+  
+  function updateIndicators(index) {
+    if (!swipeIndicators) return;
+    
+    const dots = swipeIndicators.querySelectorAll('.indicator-dot');
+    dots.forEach((dot, i) => {
+      if (i === index) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    });
+    
+    currentListIndex = index;
+    
+    const leftArrow = document.querySelector('.swipe-arrow-left');
+    const rightArrow = document.querySelector('.swipe-arrow-right');
+    
+    if (leftArrow && rightArrow) {
+      leftArrow.style.display = index === 0 ? 'none' : 'flex';
+      rightArrow.style.display = index === dots.length - 1 ? 'none' : 'flex';
+    }
+  }
+  
+  function scrollToList(index) {
+    const todoApps = container.querySelectorAll('.todo-app');
+    if (index >= 0 && index < todoApps.length) {
+      const targetList = todoApps[index];
+      container.scrollTo({
+        left: targetList.offsetLeft - container.offsetLeft,
+        behavior: 'smooth'
+      });
+      updateIndicators(index);
+    }
+  }
+  
+  function navigateList(direction) {
+    const newIndex = direction === 'next' ? 
+      Math.min(currentListIndex + 1, container.querySelectorAll('.todo-app').length - 1) : 
+      Math.max(currentListIndex - 1, 0);
+    
+    scrollToList(newIndex);
+  }
+  
+  container.addEventListener('scroll', debounce(function() {
+    if (window.innerWidth > 768) return;
+    
+    const todoApps = container.querySelectorAll('.todo-app');
+    const containerLeft = container.scrollLeft;
+    const containerWidth = container.offsetWidth;
+    
+    let maxVisibleIndex = 0;
+    let maxVisibleAmount = 0;
+    
+    todoApps.forEach((app, index) => {
+      const appLeft = app.offsetLeft - container.offsetLeft;
+      const appWidth = app.offsetWidth;
+      
+      const visibleLeft = Math.max(containerLeft, appLeft);
+      const visibleRight = Math.min(containerLeft + containerWidth, appLeft + appWidth);
+      const visibleAmount = Math.max(0, visibleRight - visibleLeft);
+      
+      if (visibleAmount > maxVisibleAmount) {
+        maxVisibleAmount = visibleAmount;
+        maxVisibleIndex = index;
+      }
+    });
+    
+    updateIndicators(maxVisibleIndex);
+  }, 100));
+  
+  setupMobileView();
+  
+  window.addEventListener('resize', debounce(function() {
+    setupMobileView();
+  }, 250));
+  
+  const observer = new MutationObserver(debounce(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.type === 'childList' && window.innerWidth <= 768) {
+        setupMobileView();
+      }
+    });
+  }, 250));
+  
+  observer.observe(container, { childList: true });
+  
+  const originalCreateList = window.createList;
+  window.createList = function() {
+    originalCreateList();
+    
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        const todoApps = container.querySelectorAll('.todo-app');
+        scrollToList(todoApps.length - 1);
+      }, 100);
+    }
+  };
+  
+  function debounce(func, wait) {
+    let timeout;
+    return function() {
+      const context = this, args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(function() {
+        func.apply(context, args);
+      }, wait);
+    };
+  }
+  
+  let touchStartX = 0;
+  let touchEndX = 0;
+  
+  container.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, {passive: true});
+  
+  container.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipeGesture();
+  }, {passive: true});
+  
+  function handleSwipeGesture() {
+    const swipeThreshold = 50;
+    if (touchStartX - touchEndX > swipeThreshold) {
+      navigateList('next');
+    } else if (touchEndX - touchStartX > swipeThreshold) {
+      navigateList('prev');
+    }
+  }
+});
