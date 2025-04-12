@@ -6,7 +6,7 @@
   --white: #fff;                    /* Targets text (e.g., top banner, buttons) and backgrounds (e.g., todo app, modal) */
   --light-gray: #dedede;            /* Targets borders (e.g., sidebar, list items, sidebar) */
   --medium-gray: #808080;           /* Targets placeholder text (e.g., user name) */
-  --dark-gray: #555;                /* Targets checked items, delete buttons, and drag handle dots */
+  --dark-gray: #555;                /* Targets checked items, delete buttons and drag handle dots */
   --scrollbar-thumb: #aaaaaa;       /* Targets scrollbar thumb */
   --scrollbar-track: #f8f8f8;       /* Targets scrollbar track */
   --input-bg: #edeef0;              /* Targets background for input rows and delete button hover state */

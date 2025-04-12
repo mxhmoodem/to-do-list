@@ -86,9 +86,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
   setInterval(displayCurrentDate, 60000);
 });
 
-// ==========================================
+// =========================================
 //         SIDEBAR & NAME STORAGE
-// ==========================================
+// =========================================
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   const mainContent = document.querySelector('.main-content');
