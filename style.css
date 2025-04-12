@@ -667,6 +667,7 @@ ul li span:hover {
 #feedbackText {
   width: 100%;
   min-height: 120px;
+  max-height: 250px;
   margin-bottom: 20px;
   resize: vertical;
   padding: 12px;
