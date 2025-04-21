@@ -13,13 +13,16 @@
 <body>
   <div class="top-banner">
     <div class="banner-left">
-      <div class="tooltip">
+      <div class="toggle-pill">
         <button class="toggle-btn" id="toggle-btn" onclick="toggleSidebar()">☰</button>
-        <!-- <span class="tooltiptext">Toggle Sidebar</span> -->
       </div>
       <h1>To-Do List App</h1>
     </div>
     <div class="banner-right">
+      <div class="toggle-pill">
+        <button class="view-btn" data-view="list"><img src="/images/list.png"></button>
+        <button class="view-btn" data-view="canvas"><img src="/images/canvas.png"></button>
+      </div>
       <span id="current-date"></span>
     </div>
   </div>

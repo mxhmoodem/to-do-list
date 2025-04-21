@@ -1,39 +1,39 @@
 :root {
-  --primary-color: #226ff5;         /* Targets buttons like "Add Task", "Create New List", and feedback button */
-  --secondary-color: #002765;       /* Targets top banner background and headers in the sidebar */
-  --background-color: #f8fafd;      /* Targets main background for body, sidebar, and list item hover states */
-  --primary-hover: #0944db;         /* Targets hover state for primary buttons */
-  --white: #fff;                    /* Targets text (e.g., top banner, buttons) and backgrounds (e.g., todo app, modal) */
-  --light-gray: #dedede;            /* Targets borders (e.g., sidebar, list items, sidebar) */
-  --medium-gray: #808080;           /* Targets placeholder text (e.g., user name) */
-  --dark-gray: #555;                /* Targets checked items, delete buttons and drag handle dots */
-  --scrollbar-thumb: #aaaaaa;       /* Targets scrollbar thumb */
-  --scrollbar-track: #f8f8f8;       /* Targets scrollbar track */
-  --input-bg: #edeef0;              /* Targets background for input rows and delete button hover state */
-  --light-bg: #eee;                 /* Targets background for "Add Due Date" button */
-  --text-color: #333;               /* Targets text color for "Add Due Date" button */
-  --hover-bg: #ccc;                 /* Targets hover background for "Add Due Date" button */
-  --due-date-color: #888;           /* Targets due date text */
-  --error-color: #ff0000;           /* Targets overdue due dates */
-  --cancel-btn: #6c757d;            /* Targets cancel button background in modal */
-  --cancel-btn-hover: #5a6268;      /* Targets cancel button hover background */
-  --dragging-bg: #d6e0ef;           /* Targets background for dragging list items */
-  --indicator-color: #0000ff;       /* Targets drop indicator */
+  --primary-color: #226ff5; /* Targets buttons like "Add Task", "Create New List", and feedback button */
+  --secondary-color: #002765; /* Targets top banner background and headers in the sidebar */
+  --background-color: #f8fafd; /* Targets main background for body, sidebar, and list item hover states */
+  --primary-hover: #0944db; /* Targets hover state for primary buttons */
+  --white: #fff; /* Targets text (e.g., top banner, buttons) and backgrounds (e.g., todo app, modal) */
+  --light-gray: #dedede; /* Targets borders (e.g., sidebar, list items, sidebar) */
+  --medium-gray: #808080; /* Targets placeholder text (e.g., user name) */
+  --dark-gray: #555; /* Targets checked items, delete buttons and drag handle dots */
+  --scrollbar-thumb: #aaaaaa; /* Targets scrollbar thumb */
+  --scrollbar-track: #f8f8f8; /* Targets scrollbar track */
+  --input-bg: #edeef0; /* Targets background for input rows and delete button hover state */
+  --light-bg: #eee; /* Targets background for "Add Due Date" button */
+  --text-color: #333; /* Targets text color for "Add Due Date" button */
+  --hover-bg: #ccc; /* Targets hover background for "Add Due Date" button */
+  --due-date-color: #888; /* Targets due date text */
+  --error-color: #ff0000; /* Targets overdue due dates */
+  --cancel-btn: #6c757d; /* Targets cancel button background in modal */
+  --cancel-btn-hover: #5a6268; /* Targets cancel button hover background */
+  --dragging-bg: #d6e0ef; /* Targets background for dragging list items */
+  --indicator-color: #0000ff; /* Targets drop indicator */
   --scrollbar-thumb-hover: #666666; /* Targets scrollbar thumb hover state */
-  --hover-light: #e0e0e0;           /* Targets toggle button text hover and close container background hover */
-  --shadow-dark: 0, 0, 0;             /* Targets RGB values for shadows and modal overlay */
-  --shadow-light: 209, 209, 209;      /* Targets RGB values for todo app shadows */
-  --tooltip-bg: 145, 145, 145;        /* Targets RGB values for tooltip background */
-  --modal-close-color: #aaa;        /* Targets modal close button */
-  --black: #000;                    /* Targets modal close button on hover */
-  --shadow-medium: 59, 59, 59;        /* Targets RGB values for create list button shadow */
+  --hover-light: #e0e0e0; /* Targets toggle button text hover and close container background hover */
+  --shadow-dark: 0, 0, 0; /* Targets RGB values for shadows and modal overlay */
+  --shadow-light: 209, 209, 209; /* Targets RGB values for todo app shadows */
+  --tooltip-bg: 145, 145, 145; /* Targets RGB values for tooltip background */
+  --modal-close-color: #aaa; /* Targets modal close button */
+  --black: #000; /* Targets modal close button on hover */
+  --shadow-medium: 59, 59, 59; /* Targets RGB values for create list button shadow */
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 body {
@@ -63,7 +63,7 @@ body {
 .banner-left {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
 }
 
 .banner-left h1 {
@@ -71,8 +71,22 @@ body {
   margin: 0;
 }
 
+.banner-left .toggle-pill {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.banner-left #toggle-btn {
+  font-size: 20px;
+  padding: 10px 18px;
+}
+
 .banner-right {
   padding-right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 /* Content Wrapper */
@@ -112,15 +126,15 @@ body {
 }
 
 .name-input {
-  font-size: inherit; 
+  font-size: inherit;
   font-family: inherit;
-  border: 1px solid #ccc; 
+  border: 1px solid #ccc;
   padding: 2px 5px;
   border-radius: 3px;
   outline: none;
   display: inline-block;
   width: auto;
-  min-width: 100px; 
+  min-width: 100px;
 }
 
 #user-name {
@@ -157,19 +171,53 @@ body {
 }
 
 /* Toggle Button */
-.toggle-btn {
+.toggle-btn,
+.view-btn {
   background-color: transparent;
   color: var(--white);
   border: none;
-  outline: none;
-  padding: 8px 12.35px 8.5px 12.35px;
-  font-size: 20px;
+  padding: 8px 16px;
   cursor: pointer;
-  transition: color 0.2s ease;
+  font-size: 14px;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-.toggle-btn:hover {
-  color: var(--hover-light);
+.view-btn {
+  flex: 1 0 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.view-btn:first-child {
+  border-radius: 20px 0 0 20px;
+  border-right: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.view-btn:last-child {
+  border-radius: 0 20px 20px 0;
+  margin-left: -1px;
+}
+
+.toggle-btn:hover,
+.view-btn:hover {
+  background-color: var(--primary-hover);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.view-btn.active {
+  background-color: var(--primary-hover);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.view-btn.active {
+  background-color: var(--primary-hover);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.view-btn img {
+  height: 23px;
 }
 
 /* Create List Button */
@@ -202,9 +250,11 @@ body {
 /* Main Content */
 .main-content {
   flex: 1;
+  flex-direction: column;
   margin-left: 250px;
   padding: 20px;
   transition: margin-left 0.3s ease-in-out;
+  height: calc(100vh - 70px);
 }
 
 .main-content.sidebar-collapsed {
@@ -214,6 +264,7 @@ body {
 #current-date {
   font-size: 18px;
   color: var(--white);
+  margin-right: 10px;
 }
 
 .lists-header {
@@ -228,7 +279,7 @@ body {
 
 .lists-header::before,
 .lists-header::after {
-  content: '';
+  content: "";
   flex: 1;
   border-bottom: 1px solid var(--light-gray);
   margin: 0 10px;
@@ -258,12 +309,13 @@ body {
   position: relative;
   display: flex;
   gap: 20px;
-  padding: 10px;
+  padding: 0 0 0 0;
   overflow-x: hidden;
   width: 100%;
   max-width: 100%;
   white-space: nowrap;
   align-items: flex-start;
+  flex: 1;
 }
 
 .todo-app {
@@ -369,7 +421,8 @@ button:hover {
   background: var(--primary-hover);
 }
 
-button.sending, button:disabled.sending {
+button.sending,
+button:disabled.sending {
   cursor: default !important;
   background: var(--primary-hover) !important;
 }
@@ -392,7 +445,7 @@ ul li:hover {
 }
 
 ul li::before {
-  content: '';
+  content: "";
   position: absolute;
   height: 26px;
   width: 26px;
@@ -728,7 +781,8 @@ ul li span:hover {
   margin-bottom: 10px;
 }
 
-.success-message, .error-message {
+.success-message,
+.error-message {
   display: none;
   padding: 15px;
   border-radius: 8px;
@@ -817,6 +871,320 @@ li.dragging {
   cursor: inherit !important;
 }
 
+/* Layout Toggle Styles */
+.layout-toggle-wrapper {
+  margin-left: 15px;
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  vertical-align: middle;
+}
+
+.layout-toggle {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.layout-icon {
+  font-size: 24px;
+  color: var(--white);
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  display: block !important;
+  opacity: 1 !important;
+  z-index: 1003;
+}
+
+.row-layout-icon {
+  letter-spacing: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.row-layout-icon::before {
+  content: "≡";
+  display: inline-block;
+}
+
+.row-layout-icon:hover {
+  background-color: transparent !important;
+}
+
+.free-layout-icon {
+  display: inline-block !important;
+}
+
+.free-layout-icon::before {
+  content: "⊞";
+  display: inline-block;
+}
+
+.layout-toggle-pill {
+  position: relative;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  overflow: visible;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+.layout-toggle-pill .pill-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  font-size: 20px;
+  color: #fff;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  z-index: 1002;
+  position: relative;
+}
+.layout-toggle-pill .pill-btn.active {
+  background: #fff;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+.layout-toggle-pill .pill-btn:not(.active):hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.pill-btn.active .layout-icon {
+  display: inline-block !important;
+  visibility: visible !important;
+}
+
+.pill-btn:not(.active) .layout-icon {
+  display: inline-block !important;
+  visibility: visible !important;
+}
+
+.pill-btn .layout-icon {
+  display: inline-block !important;
+  visibility: visible !important;
+}
+
+/* Fix canvas background and scroll behavior */
+.container.free-layout {
+  overflow: auto !important;
+  position: relative;
+  height: calc(100vh - 110px);
+  max-height: calc(100vh - 110px);
+  min-height: 400px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto 20px auto;
+  border: 1px dashed black;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: var(--background-color);
+  box-sizing: border-box;
+}
+
+/* Container Layout Styles */
+.container.row-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px;
+  overflow-x: auto;
+}
+
+.container.free-layout.canvas-dragging {
+  background-image: linear-gradient(
+      to right,
+      rgba(34, 111, 245, 0.1) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(34, 111, 245, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-color: var(--background-color);
+  transition: background-image 0.2s;
+}
+
+.container.free-layout .canvas-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2000px;
+  height: 2000px;
+  min-width: 100%;
+  min-height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.container.canvas-view {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: calc(100vh - 70px);
+  overflow: auto;
+}
+
+.container.canvas-view .todo-app {
+  position: absolute;
+}
+
+.canvas-spacer {
+  position: absolute;
+  pointer-events: none;
+}
+
+.free-layout .todo-app {
+  position: absolute;
+  margin: 0;
+  box-shadow: 0 2px 8px rgba(var(--shadow-dark), 0.2);
+  transition: box-shadow 0.2s, transform 0.1s;
+  z-index: 5;
+  max-width: 400px;
+}
+
+.free-layout .todo-app.faded {
+  opacity: 0.5;
+  filter: grayscale(0.5);
+  pointer-events: none;
+  transition: opacity 0.2s, filter 0.2s;
+}
+
+.free-layout .todo-app:hover {
+  box-shadow: 0 4px 12px rgba(var(--shadow-dark), 0.3);
+}
+
+.free-layout .todo-app .drag-handle {
+  display: block;
+  opacity: 0.7;
+}
+
+.free-layout .todo-app:hover .drag-handle {
+  opacity: 1;
+}
+
+.free-layout .drag-handle .dot {
+  width: 5px;
+  height: 5px;
+}
+
+.selection-box {
+  position: absolute;
+  border: 1px dashed var(--primary-color);
+  background-color: rgba(34, 111, 245, 0.05);
+  pointer-events: none;
+  z-index: 500;
+}
+
+.container.free-layout::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  display: block !important;
+  background-color: var(--scrollbar-track);
+}
+
+.container.free-layout::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 4px;
+}
+
+.container.free-layout::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+  opacity: 1 !important;
+}
+*/ .main-content.free-layout-active {
+  overflow: hidden;
+  max-height: 100vh;
+}
+
+.container.free-layout.dragging-active {
+  max-width: 100%;
+  max-height: calc(100vh - 110px);
+  overflow: auto !important;
+}
+
+.free-layout .todo-app.dragging {
+  position: absolute !important;
+  z-index: 10;
+}
+
+.container.free-layout {
+  max-width: 100%;
+  max-height: calc(100vh - 110px);
+  overflow: auto !important;
+}
+
+.layout-toggle-pill .pill-btn {
+  z-index: 1002;
+  position: relative;
+}
+
+.container.free-layout.canvas-dragging {
+  height: calc(100vh - 110px) !important;
+  overflow: auto !important;
+}
+
+.container.free-layout:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.pill-btn {
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.todo-app.ui-draggable-dragging {
+  max-width: 400px;
+  z-index: 1000;
+  position: absolute !important;
+}
+
+.layout-toggle-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  height: 38px;
+  margin-left: 15px;
+  position: relative;
+  z-index: 1100;
+}
+
+.toggle-pill {
+  display: flex;
+  align-items: center;
+  background-color: var(--primary-color);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.toggle-btn,
+.view-btn {
+  background-color: transparent;
+  color: var(--white);
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.toggle-btn:hover,
+.view-btn:hover {
+  background-color: var(--primary-hover);
+  transition: background-color 0.2s, color 0.2s;
+}
+
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 6px;
@@ -855,22 +1223,22 @@ li.dragging {
     overflow-y: auto;
     z-index: 100;
   }
-  
+
   .sidebar.collapsed {
     top: -100%;
     transform: none;
   }
-  
+
   .sidebar:not(.collapsed) {
     top: 70px;
   }
-  
+
   .main-content {
     margin-left: 0 !important;
     padding: 20px 10px;
     width: 100%;
   }
-  
+
   .container {
     width: 100%;
     overflow-x: auto;
@@ -893,14 +1261,14 @@ li.dragging {
   .toggle-btn {
     background-color: transparent !important;
   }
-  
+
   .swipe-indicator {
     display: flex;
     justify-content: center;
     gap: 8px;
     margin: 15px 0;
   }
-  
+
   .indicator-dot {
     width: 8px;
     height: 8px;
@@ -908,7 +1276,7 @@ li.dragging {
     background-color: #ccc;
     transition: background-color 0.3s ease;
   }
-  
+
   .indicator-dot.active {
     background-color: var(--primary-color);
   }
@@ -916,9 +1284,9 @@ li.dragging {
   .container::-webkit-scrollbar {
     display: none;
   }
-  
+
   .container {
-    -ms-overflow-style: none; 
+    -ms-overflow-style: none;
     scrollbar-width: none;
   }
 
@@ -937,29 +1305,29 @@ li.dragging {
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
-  
+
   .swipe-arrow-left {
     left: 5px;
   }
-  
+
   .swipe-arrow-right {
     right: 5px;
   }
-  
+
   .swipe-arrow:after {
-    content: '';
+    content: "";
     display: block;
     width: 12px;
     height: 12px;
     border-top: 2px solid var(--secondary-color);
     border-right: 2px solid var(--secondary-color);
   }
-  
+
   .swipe-arrow-left:after {
     transform: rotate(-135deg);
     margin-left: 5px;
   }
-  
+
   .swipe-arrow-right:after {
     transform: rotate(45deg);
     margin-right: 5px;
@@ -968,7 +1336,7 @@ li.dragging {
   .drag-handle {
     top: 6px;
   }
-  
+
   .feedback-btn {
     position: relative;
     bottom: auto;
@@ -982,19 +1350,19 @@ li.dragging {
     max-width: calc(100% - 10px);
     padding: 0 10px 30px 10px;
   }
-  
+
   .top-banner {
     padding: 0 10px;
   }
-  
+
   .banner-left h1 {
     font-size: 18px;
   }
-  
+
   .sidebar {
     max-height: 80vh;
   }
-  
+
   .header-row h2 {
     font-size: 22px;
   }
