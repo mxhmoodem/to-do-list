@@ -7,7 +7,7 @@
   <title>To Do List</title>
   <link rel="stylesheet" href="style.css"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 
 <body>
@@ -22,6 +22,14 @@
       <div class="toggle-pill">
         <button class="view-btn" data-view="list"><img src="images/list.png"></button>
         <button class="view-btn" data-view="canvas"><img src="images/canvas.png"></button>
+      </div>
+      <div class="theme-switch-wrapper">
+        <input type="checkbox" class="checkbox" id="checkbox">
+        <label for="checkbox" class="checkbox-label">
+          <img src="images/dark-mode-toggle.png" class="moon-icon" alt="Dark mode">
+          <img src="images/light-mode-toggle.png" class="sun-icon" alt="Light mode">
+          <span class="ball"></span>
+        </label>
       </div>
       <span id="current-date"></span>
     </div>
@@ -41,9 +49,25 @@
       </div>
       <h4 class="lists-header">Lists</h4>
       <div class="list-of-lists" id="list-of-lists"></div> 
-      <div class="feedback-btn">
-        <button id="feedbackBtn">Give Feedback</button>
-      </div>      
+      <div class="sidebar-bottom">
+        <div class="general-section">
+          <h5 class="section-label">GENERAL</h5>
+          <div class="general-options">
+            <button class="general-option" id="settingsBtn">
+              <img src="images/settings-icon.png" alt="Settings">
+              <span>Settings</span>
+            </button>
+            <button class="general-option" id="feedbackBtn">
+              <img src="images/feeback-icon.png" alt="Feedback">
+              <span>Feedback</span>
+            </button>
+            <button class="general-option" id="logoutBtn">
+              <img src="images/logout-icon.png" alt="Logout">
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="main-content">
@@ -99,6 +123,101 @@
         <div class="success-message" id="successMessage">Thank you for your feedback!</div>
         <div class="error-message" id="errorMessage">Failed to send feedback. Please try again.</div>
       </form>
+    </div>
+  </div>
+
+  <div id="settingsPage" class="settings-page" style="display: none;">
+    <div class="settings-header">
+      <button class="back-btn" id="backBtn">← Back</button>
+      <h1>Settings</h1>
+    </div>
+    <div class="settings-content">
+      <div class="settings-section">
+        <h3>Color Theme</h3>
+        <p class="settings-description">Choose your preferred color theme</p>
+        <div class="theme-options">
+          <div class="theme-option" data-theme="default">
+            <div class="theme-preview default-theme">
+              <div class="theme-color-1"></div>
+              <div class="theme-color-2"></div>
+              <div class="theme-color-3"></div>
+            </div>
+            <span>Blue Purple</span>
+          </div>
+          <div class="theme-option" data-theme="ocean">
+            <div class="theme-preview ocean-theme">
+              <div class="theme-color-1"></div>
+              <div class="theme-color-2"></div>
+              <div class="theme-color-3"></div>
+            </div>
+            <span>Ocean Blue</span>
+          </div>
+          <div class="theme-option" data-theme="forest">
+            <div class="theme-preview forest-theme">
+              <div class="theme-color-1"></div>
+              <div class="theme-color-2"></div>
+              <div class="theme-color-3"></div>
+            </div>
+            <span>Forest Green</span>
+          </div>
+          <div class="theme-option" data-theme="sunset">
+            <div class="theme-preview sunset-theme">
+              <div class="theme-color-1"></div>
+              <div class="theme-color-2"></div>
+              <div class="theme-color-3"></div>
+            </div>
+            <span>Sunset Orange</span>
+          </div>
+          <div class="theme-option" data-theme="rose">
+            <div class="theme-preview rose-theme">
+              <div class="theme-color-1"></div>
+              <div class="theme-color-2"></div>
+              <div class="theme-color-3"></div>
+            </div>
+            <span>Rose Pink</span>
+          </div>
+          <div class="theme-option" data-theme="midnight">
+            <div class="theme-preview midnight-theme">
+              <div class="theme-color-1"></div>
+              <div class="theme-color-2"></div>
+              <div class="theme-color-3"></div>
+            </div>
+            <span>Midnight</span>
+          </div>
+          <div class="theme-option" data-theme="lavender">
+            <div class="theme-preview lavender-theme">
+              <div class="theme-color-1"></div>
+              <div class="theme-color-2"></div>
+              <div class="theme-color-3"></div>
+            </div>
+            <span>Lavender</span>
+          </div>
+          <div class="theme-option" data-theme="amber">
+            <div class="theme-preview amber-theme">
+              <div class="theme-color-1"></div>
+              <div class="theme-color-2"></div>
+              <div class="theme-color-3"></div>
+            </div>
+            <span>Amber Gold</span>
+          </div>
+          <div class="theme-option" data-theme="teal">
+            <div class="theme-preview teal-theme">
+              <div class="theme-color-1"></div>
+              <div class="theme-color-2"></div>
+              <div class="theme-color-3"></div>
+            </div>
+            <span>Teal Cyan</span>
+          </div>
+          <div class="theme-option" data-theme="crimson">
+            <div class="theme-preview crimson-theme">
+              <div class="theme-color-1"></div>
+              <div class="theme-color-2"></div>
+              <div class="theme-color-3"></div>
+            </div>
+            <span>Crimson Red</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

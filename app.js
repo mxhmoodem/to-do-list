@@ -11,7 +11,33 @@ let canvasWidth = 0;
 let canvasHeight = 0;
 let canvasPadding = 13;
 
+// ==========================================
+//         THEME MANAGEMENT
+// ==========================================
+function initializeTheme() {
+  const checkbox = document.getElementById("checkbox");
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  
+  // Apply saved theme
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark');
+    if (checkbox) checkbox.checked = true;
+  }
+  
+  // Set up theme toggle
+  if (checkbox) {
+    checkbox.addEventListener("change", () => {
+      document.body.classList.toggle("dark");
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+  }
+}
+
 document.addEventListener("DOMContentLoaded", (event) => {
+  // Initialize theme
+  initializeTheme();
+  
   const savedName = localStorage.getItem("userName");
   const userNameElement = document.getElementById("user-name");
   const savedTitle = localStorage.getItem("headerTitle");
@@ -969,6 +995,103 @@ window.addEventListener("click", function (event) {
     hideConfirmationModal();
   }
 });
+
+// =========================================
+//        SETTINGS MODAL & COLOR THEMES
+// =========================================
+
+// Initialize color theme
+function initializeColorTheme() {
+  const savedColorTheme = localStorage.getItem('colorTheme') || 'default';
+  applyColorTheme(savedColorTheme);
+  updateActiveThemeOption(savedColorTheme);
+}
+
+function applyColorTheme(theme) {
+  const body = document.body;
+  
+  // Remove all theme attributes
+  body.removeAttribute('data-color-theme');
+  
+  // Apply new theme (default doesn't need attribute)
+  if (theme !== 'default') {
+    body.setAttribute('data-color-theme', theme);
+  }
+  
+  localStorage.setItem('colorTheme', theme);
+}
+
+function updateActiveThemeOption(theme) {
+  const themeOptions = document.querySelectorAll('.theme-option');
+  themeOptions.forEach(option => {
+    if (option.dataset.theme === theme) {
+      option.classList.add('active');
+    } else {
+      option.classList.remove('active');
+    }
+  });
+}
+
+// Settings page functionality
+const settingsPage = document.getElementById("settingsPage");
+const settingsBtn = document.getElementById("settingsBtn");
+const backBtn = document.getElementById("backBtn");
+const mainContent = document.querySelector(".content-wrapper");
+const topBanner = document.querySelector(".top-banner");
+
+if (settingsBtn) {
+  settingsBtn.onclick = function () {
+    // Hide main content and show settings page
+    if (mainContent) mainContent.style.display = "none";
+    if (topBanner) topBanner.style.display = "none";
+    settingsPage.style.display = "block";
+    
+    // Update active theme display
+    const currentTheme = localStorage.getItem('colorTheme') || 'default';
+    updateActiveThemeOption(currentTheme);
+  };
+}
+
+if (backBtn) {
+  backBtn.onclick = function () {
+    // Hide settings page and show main content
+    settingsPage.style.display = "none";
+    if (mainContent) mainContent.style.display = "flex";
+    if (topBanner) topBanner.style.display = "flex";
+  };
+}
+
+// Handle theme selection
+document.addEventListener('click', function(e) {
+  const themeOption = e.target.closest('.theme-option');
+  if (themeOption) {
+    const selectedTheme = themeOption.dataset.theme;
+    applyColorTheme(selectedTheme);
+    updateActiveThemeOption(selectedTheme);
+  }
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  initializeColorTheme();
+});
+
+// Logout functionality
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+  logoutBtn.onclick = function() {
+    // Show confirmation dialog
+    const confirmLogout = confirm("Are you sure you want to logout? This will clear all your data.");
+    
+    if (confirmLogout) {
+      // Clear all localStorage data
+      localStorage.clear();
+      
+      // Reset the page to initial state
+      location.reload();
+    }
+  };
+}
 
 // =========================================
 //        FEEDBACK FORM & EMAILJS
