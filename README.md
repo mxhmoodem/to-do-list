@@ -170,13 +170,77 @@ See [SETUP.md](SETUP.md) for more troubleshooting tips.
 
 ## 🚀 Deployment
 
-To deploy this app:
+### Deploy to Railway (Recommended)
 
-1. **Set up a production MongoDB database** (MongoDB Atlas recommended)
-2. **Deploy backend** to Heroku, Railway, or similar
-3. **Update environment variables** on your hosting platform
-4. **Set `NODE_ENV=production`**
-5. **Configure CORS** for your frontend domain
+This app is configured for easy deployment to [Railway](https://railway.app/).
+
+#### Prerequisites
+1. **MongoDB Atlas Account** - Create a free account at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
+2. **GitHub Account** - Push your code to a GitHub repository
+3. **Railway Account** - Sign up at [railway.app](https://railway.app/)
+
+#### Step-by-Step Railway Deployment
+
+1. **Prepare MongoDB Atlas**
+   - Create a new cluster (free tier is fine)
+   - Create a database user with username and password
+   - Get your connection string (should look like: `mongodb+srv://username:password@cluster.mongodb.net/todolist`)
+   - **Important:** In Network Access, allow access from anywhere (0.0.0.0/0) for Railway
+
+2. **Push to GitHub**
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git remote add origin YOUR_GITHUB_REPO_URL
+   git push -u origin main
+   ```
+
+3. **Deploy on Railway**
+   - Go to [railway.app](https://railway.app/) and login
+   - Click "New Project" → "Deploy from GitHub repo"
+   - Select your repository
+   - Railway will automatically detect the Node.js app
+
+4. **Configure Environment Variables**
+   
+   In Railway dashboard, go to your project → Variables tab and add:
+   
+   | Variable | Value |
+   |----------|-------|
+   | `MONGODB_URI` | Your MongoDB Atlas connection string |
+   | `JWT_SECRET` | A random secret key (generate one!) |
+   | `NODE_ENV` | `production` |
+   
+   **Example:**
+   ```
+   MONGODB_URI=mongodb+srv://myuser:mypassword@cluster0.xxxxx.mongodb.net/todolist
+   JWT_SECRET=use_a_random_string_here_at_least_32_chars
+   NODE_ENV=production
+   ```
+
+5. **Deploy!**
+   - Railway will automatically build and deploy your app
+   - Once deployed, click on the generated URL to access your app
+   - You can also add a custom domain in Railway settings
+
+#### Automatic Deployments
+- Every time you push to your GitHub repo, Railway will automatically redeploy
+- No manual deployment needed!
+
+### Deploy to Other Platforms
+
+This app can also be deployed to:
+- **Heroku**: Similar process, use Heroku dashboard to set environment variables
+- **Render**: Connect GitHub repo and set environment variables
+- **DigitalOcean App Platform**: Deploy from GitHub with environment variables
+- **Vercel/Netlify**: Backend only (these are primarily for frontend)
+
+**General Requirements:**
+1. Set up a production MongoDB database (MongoDB Atlas recommended)
+2. Set all required environment variables on your hosting platform
+3. Ensure `NODE_ENV=production` is set
+4. The app uses `process.env.PORT` which works with most platforms
 
 ## 📝 License
 

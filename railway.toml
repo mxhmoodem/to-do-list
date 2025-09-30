@@ -1,0 +1,11 @@
+# Railway Configuration File
+# https://docs.railway.app/deploy/config-as-code
+
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "npm start"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
