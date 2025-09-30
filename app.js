@@ -35,8 +35,6 @@
       console.log('Token invalid, redirecting to login...');
       localStorage.clear();
       window.location.replace('/');
-    } else {
-      console.log('✅ Authenticated as:', data.user.username);
     }
   })
   .catch(error => {
