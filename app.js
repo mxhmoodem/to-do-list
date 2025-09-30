@@ -1,3 +1,77 @@
+// ==========================================
+//         AUTHENTICATION CHECK
+// ==========================================
+// This auth check should ONLY run on the protected dashboard page
+// It checks if user has a valid token, otherwise redirects to login
+(function checkAuth() {
+  // Only run auth check if we're on the dashboard page (/app) or if accessed via index.html
+  const currentPath = window.location.pathname;
+  const isOnDashboard = currentPath === '/app' ||
+                       (currentPath === '/' && window.location.href.includes('index.html'));
+
+  if (!isOnDashboard) {
+    console.log('Not on dashboard page, skipping auth check');
+    return;
+  }
+
+  const token = localStorage.getItem('token');
+
+  // If we're on the dashboard but no token, redirect to login
+  if (!token) {
+    console.log('On dashboard but no token, redirecting to login...');
+    window.location.replace('/');
+    return;
+  }
+
+  // If we have a token, verify it
+  fetch('/api/auth/me', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) {
+      console.log('Token invalid, redirecting to login...');
+      localStorage.clear();
+      window.location.replace('/');
+    } else {
+      console.log('✅ Authenticated as:', data.user.username);
+    }
+  })
+  .catch(error => {
+    console.error('Auth check failed:', error);
+    localStorage.clear();
+    window.location.replace('/');
+  });
+})();
+
+// ==========================================
+//         API UTILITY FUNCTIONS
+// ==========================================
+async function apiCall(url, method = 'GET', data = null) {
+  const token = localStorage.getItem('token');
+  const options = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  };
+  
+  if (data) {
+    options.body = JSON.stringify(data);
+  }
+  
+  try {
+    const response = await fetch(url, options);
+    return await response.json();
+  } catch (error) {
+    console.error('API call error:', error);
+    return { success: false, message: 'Network error' };
+  }
+}
+
 let draggedList = null;
 let isFreelayout = false;
 let isDragging = false;
@@ -10,6 +84,7 @@ let isDraggingHandle = false;
 let canvasWidth = 0;
 let canvasHeight = 0;
 let canvasPadding = 13;
+let saveTimeout = null; // For debouncing saves
 
 // ==========================================
 //         THEME MANAGEMENT
@@ -100,9 +175,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   updateContainerCloseButtons();
   displayCurrentDate();
-  showTaskData();
-  loadAllLists();
-  updateSidebarList();
+  loadFromDatabase(); // Load from MongoDB instead of localStorage
   updateAllDueDates();
   attachNameClickHandler(userNameElement);
 
@@ -548,15 +621,275 @@ function addDragAndDropHandlers(li) {
 //    LOCALSTORAGE FOR SINGLE-LIST DATA
 // =========================================
 function saveData() {
-  localStorage.setItem("data", listContainer.innerHTML);
+  // Save to database instead of localStorage
+  debouncedSaveToDatabase();
+}
+
+// Debounced save to avoid too many API calls
+function debouncedSaveToDatabase() {
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => {
+    saveToDatabase();
+  }, 1000); // Wait 1 second after last change
+}
+
+async function saveToDatabase() {
+  const container = document.querySelector(".container");
+  const todoApps = container.querySelectorAll(".todo-app");
+  const lists = [];
+
+  todoApps.forEach((app, index) => {
+    const title = app.querySelector("h2").innerText;
+    const ul = app.querySelector("ul");
+    const tasks = [];
+    
+    ul.querySelectorAll('li').forEach(li => {
+      const text = li.firstChild ? li.firstChild.textContent.trim() : '';
+      const checked = li.classList.contains('checked');
+      const dueDate = li.dataset.dueDate || null;
+      
+      tasks.push({
+        text,
+        checked,
+        dueDate
+      });
+    });
+    
+    const position = {
+      left: app.style.left || '',
+      top: app.style.top || ''
+    };
+    
+    lists.push({
+      title,
+      tasks,
+      position
+    });
+  });
+
+  const settings = {
+    theme: document.body.classList.contains('dark') ? 'dark' : 'light',
+    colorTheme: localStorage.getItem('colorTheme') || 'default',
+    isCanvasView: localStorage.getItem('isCanvasView') === 'true'
+  };
+
+  try {
+    await apiCall('/api/todos', 'POST', { lists, settings });
+  } catch (error) {
+    console.error('Error saving to database:', error);
+  }
 }
 
 function showTaskData() {
-  listContainer.innerHTML = localStorage.getItem("data") || "";
+  // This function is no longer used - loadFromDatabase handles loading
   const listItems = listContainer.querySelectorAll("li");
   listItems.forEach((li) => {
     addDragAndDropHandlers(li);
   });
+}
+
+async function loadFromDatabase() {
+  try {
+    const result = await apiCall('/api/todos', 'GET');
+    
+    if (result.success && result.data) {
+      const { lists, settings } = result.data;
+      
+      // Apply settings
+      if (settings) {
+        if (settings.theme === 'dark') {
+          document.body.classList.add('dark');
+          const checkbox = document.getElementById("checkbox");
+          if (checkbox) checkbox.checked = true;
+        }
+        if (settings.colorTheme) {
+          document.body.setAttribute('data-color-theme', settings.colorTheme);
+          localStorage.setItem('colorTheme', settings.colorTheme);
+        }
+        if (settings.isCanvasView !== undefined) {
+          isCanvasView = settings.isCanvasView;
+          localStorage.setItem('isCanvasView', settings.isCanvasView);
+        }
+      }
+      
+      // Load lists
+      if (lists && lists.length > 0) {
+        // Load first list into existing todo-app
+        const firstList = document.querySelector(".todo-app");
+        if (firstList && lists[0]) {
+          firstList.querySelector("h2").innerText = lists[0].title;
+          const firstUl = firstList.querySelector("ul");
+          firstUl.innerHTML = '';
+          
+          lists[0].tasks.forEach(task => {
+            const li = document.createElement('li');
+            li.textContent = task.text;
+            if (task.checked) {
+              li.classList.add('checked');
+            }
+            if (task.dueDate) {
+              li.dataset.dueDate = task.dueDate;
+              displayDueDate(li, task.dueDate);
+            }
+            
+            const span = document.createElement('span');
+            span.innerHTML = '\u00d7';
+            li.appendChild(span);
+            
+            li.setAttribute('draggable', 'true');
+            addDragAndDropHandlers(li);
+            
+            firstUl.appendChild(li);
+          });
+        }
+        
+        // Create additional lists
+        for (let i = 1; i < lists.length; i++) {
+          const list = lists[i];
+          createListFromData(list.title, list.tasks, list.position);
+        }
+        
+        updateSidebarList();
+      } else {
+        // Default empty list
+        showTaskData();
+        updateSidebarList();
+      }
+    }
+  } catch (error) {
+    console.error('Error loading from database:', error);
+    // Fallback to showing empty list
+    showTaskData();
+    loadAllLists();
+    updateSidebarList();
+  }
+}
+
+function createListFromData(title, tasks, position) {
+  const newTodoApp = document.createElement("div");
+  newTodoApp.classList.add("todo-app");
+
+  const dragHandle = createDragHandle();
+  dragHandle.addEventListener("mousedown", () => {
+    isDraggingHandle = true;
+  });
+  newTodoApp.insertBefore(dragHandle, newTodoApp.firstChild);
+
+  const headerRow = document.createElement("div");
+  headerRow.classList.add("header-row");
+
+  const newTitle = document.createElement("h2");
+  newTitle.contentEditable = "true";
+  newTitle.innerText = title;
+  newTitle.classList.add("header-title");
+
+  newTitle.addEventListener("blur", function () {
+    saveToDatabase();
+  });
+
+  newTitle.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      this.blur();
+    }
+  });
+
+  const closeBtnWrapper = document.createElement("div");
+  closeBtnWrapper.classList.add("close-container-wrapper");
+
+  const closeBtn = document.createElement("span");
+  closeBtn.innerHTML = "\u00D7";
+  closeBtn.classList.add("close-container");
+  closeBtn.addEventListener("click", function () {
+    removeList(this);
+  });
+
+  const tooltip = document.createElement("span");
+  tooltip.classList.add("tooltiptext");
+  tooltip.textContent = "Delete List";
+
+  closeBtnWrapper.appendChild(closeBtn);
+  closeBtnWrapper.appendChild(tooltip);
+
+  headerRow.appendChild(newTitle);
+  headerRow.appendChild(closeBtnWrapper);
+  newTodoApp.appendChild(headerRow);
+
+  const rowDiv = document.createElement("div");
+  rowDiv.classList.add("row");
+
+  const newInput = document.createElement("input");
+  newInput.type = "text";
+  newInput.placeholder = "Add a new task";
+
+  const addButton = document.createElement("button");
+  addButton.innerText = "Add Task";
+
+  rowDiv.appendChild(newInput);
+  rowDiv.appendChild(addButton);
+
+  const newUl = document.createElement("ul");
+  
+  // Add tasks
+  tasks.forEach(task => {
+    const li = document.createElement('li');
+    li.textContent = task.text;
+    if (task.checked) {
+      li.classList.add('checked');
+    }
+    if (task.dueDate) {
+      li.dataset.dueDate = task.dueDate;
+      displayDueDate(li, task.dueDate);
+    }
+    
+    const span = document.createElement('span');
+    span.innerHTML = '\u00d7';
+    li.appendChild(span);
+    
+    li.setAttribute('draggable', 'true');
+    addDragAndDropHandlers(li);
+    
+    newUl.appendChild(li);
+  });
+
+  newTodoApp.appendChild(rowDiv);
+  newTodoApp.appendChild(newUl);
+
+  // Apply position if in free layout
+  if (position && position.left && position.top) {
+    newTodoApp.style.left = position.left;
+    newTodoApp.style.top = position.top;
+  }
+
+  newTodoApp.setAttribute("draggable", "true");
+  newTodoApp.addEventListener("dragstart", handleDragStart);
+  newTodoApp.addEventListener("dragend", handleDragEnd);
+
+  const container = document.querySelector(".container");
+  container.appendChild(newTodoApp);
+
+  addButton.addEventListener("click", () => {
+    addTaskToList(newInput, newUl);
+    saveToDatabase();
+  });
+
+  newInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      addTaskToList(newInput, newUl);
+      saveToDatabase();
+    }
+  });
+
+  newUl.addEventListener("click", (e) => {
+    handleListClick(e, newUl);
+    saveToDatabase();
+  });
+
+  updateContainerCloseButtons();
+
+  if (isFreelayout) {
+    updateDragEvents(newTodoApp);
+  }
 }
 
 // =========================================
@@ -798,45 +1131,14 @@ function removeList(closeButton) {
 }
 
 function saveAllLists() {
-  const container = document.querySelector(".container");
-  const todoApps = container.querySelectorAll(".todo-app");
-  const lists = [];
-
-  todoApps.forEach((app, index) => {
-    const title = app.querySelector("h2").innerText;
-    const tasks = app.querySelector("ul").innerHTML;
-    lists.push({
-      title: title,
-      tasks: tasks,
-    });
-  });
-
-  localStorage.setItem("todoLists", JSON.stringify(lists));
+  // Save to database instead of localStorage
+  saveToDatabase();
   updateSidebarList();
 }
 
 function loadAllLists() {
-  const savedLists = localStorage.getItem("todoLists");
-  if (savedLists) {
-    const lists = JSON.parse(savedLists);
-
-    if (lists.length > 0) {
-      const firstList = document.querySelector(".todo-app");
-      if (firstList) {
-        firstList.querySelector("h2").innerText = lists[0].title;
-        const firstUl = firstList.querySelector("ul");
-        firstUl.innerHTML = lists[0].tasks;
-        const listItems = firstUl.querySelectorAll("li");
-        listItems.forEach((li) => {
-          addDragAndDropHandlers(li);
-        });
-      }
-    }
-
-    for (let i = 1; i < lists.length; i++) {
-      createListFromSaved(lists[i].title, lists[i].tasks);
-    }
-  }
+  // This is now handled by loadFromDatabase
+  // Keep function for backwards compatibility
 }
 
 function createListFromSaved(title, tasks) {
@@ -1079,16 +1381,26 @@ document.addEventListener('DOMContentLoaded', function() {
 // Logout functionality
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
-  logoutBtn.onclick = function() {
+  logoutBtn.onclick = async function() {
     // Show confirmation dialog
-    const confirmLogout = confirm("Are you sure you want to logout? This will clear all your data.");
+    const confirmLogout = confirm("Are you sure you want to logout?");
     
     if (confirmLogout) {
-      // Clear all localStorage data
-      localStorage.clear();
-      
-      // Reset the page to initial state
-      location.reload();
+      try {
+        // Call logout API
+        await apiCall('/api/auth/logout', 'POST');
+        
+        // Clear localStorage
+        localStorage.clear();
+        
+        // Redirect to login page
+        window.location.href = '/';
+      } catch (error) {
+        console.error('Logout error:', error);
+        // Even if API call fails, clear local data and redirect
+        localStorage.clear();
+        window.location.href = '/';
+      }
     }
   };
 }

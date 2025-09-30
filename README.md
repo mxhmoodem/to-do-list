@@ -1,34 +1,255 @@
-# To-Do List App
+# To-Do List App 📝
 
-A simple and elegant To-Do List web application that allows users to manage tasks efficiently with features like local storage, task editing and customisable UI elements.
+A modern, full-stack To-Do List web application with **user authentication** and **MongoDB database** storage. Each user has their own secure account and all tasks are saved to the cloud.
 
-Website at: https://mxhmoodem.github.io/to-do-list/
+## ✨ Features
 
-## Features
+### Core Functionality
+- **User Authentication** - Secure login and registration system
+- **MongoDB Database** - All data stored in MongoDB (cloud or local)
+- **Personal Accounts** - Each user has their own tasks and settings
+- **Auto-Save** - Tasks automatically sync to the database
+- **Multiple Lists** - Create and manage multiple to-do lists
+- **Task Management** - Add, edit, complete, and delete tasks
+- **Due Dates** - Set and track due dates for tasks
+- **Drag & Drop** - Reorder tasks and lists
 
-- **Add Tasks**: Users can input new tasks and add them to the list.
-- **Edit Tasks**: Click on a task to modify it inline.
-- **Mark as Completed**: Click on the left side of a task to toggle the completed state.
-- **Delete Tasks**: Click the "X" button to remove a task.
-- **Local Storage**: The app saves tasks and user details in the browser's local storage for persistence.
-- **Customisable Header & User Name**: Users can personalise the app with their name and a custom header.
+### UI Customization
+- **Dark Mode** - Toggle between light and dark themes
+- **Color Themes** - Choose from 10 beautiful color schemes (Ocean, Forest, Sunset, Rose, etc.)
+- **Canvas View** - Arrange lists freely on a canvas
+- **Responsive Design** - Works on desktop, tablet, and mobile
 
-## Technologies Used
+### Security
+- 🔒 Password encryption with bcrypt
+- 🔑 JWT-based authentication
+- 🍪 Secure HTTP-only cookies
+- ✅ Input validation
+- 🛡️ Protected API endpoints
 
-- **HTML**: Provides the structure of the app.
-- **CSS**: Styles the interface with a modern and clean design.
-- **JavaScript**: Manages task interactions, local storage and user input.
+## 🚀 Technologies Used
 
-## How to Use
+### Backend
+- **Node.js** - JavaScript runtime
+- **Express** - Web server framework
+- **MongoDB** - NoSQL database
+- **Mongoose** - MongoDB ODM
+- **JWT** - Authentication tokens
+- **bcryptjs** - Password hashing
 
-1. Open `index.html` in a browser.
-2. Enter your name in the welcome section.
-3. Type a new task in the input box and press "Enter" or click "Add Task."
-4. Click on a task to edit it.
-5. Click on the left side of a task to mark it as complete.
-6. Click the "X" button to remove a task.
-7. The list is saved automatically in local storage.
+### Frontend
+- **HTML5** - Structure
+- **CSS3** - Modern styling with custom themes
+- **JavaScript (ES6+)** - Client-side logic
+- **Fetch API** - API communication
 
-## Installation & Running Locally
+## 📦 Installation & Setup
 
-Simply download or clone the repository and open `index.html` in any modern web browser.
+### Quick Start
+
+1. **Clone or download this repository**
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up MongoDB**
+   - Install MongoDB locally OR
+   - Create a free MongoDB Atlas account at https://www.mongodb.com/cloud/atlas
+
+4. **Configure environment**
+   - Copy `.env.example` to create `.env`
+   - Update `MONGODB_URI` with your MongoDB connection string
+   - Change `JWT_SECRET` to a random secret key
+
+5. **Start the server**
+   ```bash
+   npm start
+   ```
+   
+   Or for development:
+   ```bash
+   npm run dev
+   ```
+
+6. **Open your browser**
+   ```
+   http://localhost:3000
+   ```
+
+📖 **For detailed setup instructions, see [SETUP.md](SETUP.md)**
+
+## 🎯 How to Use
+
+### First Time Users
+
+1. Go to `http://localhost:3000`
+2. Click "Register here"
+3. Create an account with username, email, and password
+4. You'll be automatically logged in
+
+### Existing Users
+
+1. Go to `http://localhost:3000`
+2. Enter your email and password
+3. Click "Login"
+4. Your tasks and preferences will be loaded
+
+### Managing Tasks
+
+- **Add Task**: Type in the input box and press Enter or click "Add Task"
+- **Edit Task**: Click on a task to edit it inline
+- **Complete Task**: Click the circle on the left to mark as complete
+- **Delete Task**: Click the "X" button on the right
+- **Due Date**: When editing, click "Add Due Date" to set a deadline
+- **Create List**: Click "+ Create New List" in the sidebar
+- **Reorder**: Drag and drop tasks to reorder them
+
+### Settings
+
+- **Theme**: Toggle dark mode in the top banner
+- **Color Theme**: Click Settings → Choose from 10 color themes
+- **View Mode**: Switch between List view and Canvas view
+- **Logout**: Click Logout in the sidebar
+
+## 📁 Project Structure
+
+```
+to-do-list/
+├── models/              # MongoDB schemas
+│   ├── User.js         # User model
+│   └── Todo.js         # Todo model
+├── routes/             # API routes
+│   ├── auth.js         # Authentication endpoints
+│   └── todos.js        # Todo CRUD endpoints
+├── middleware/         # Custom middleware
+│   └── auth.js         # JWT verification
+├── images/             # App images and icons
+├── index.html          # Main app (protected)
+├── login.html          # Login page
+├── register.html       # Register page
+├── app.js              # Client-side JavaScript
+├── style.css           # Styles
+├── server.js           # Express server
+├── package.json        # Dependencies
+├── .env.example        # Environment template
+├── .gitignore          # Git ignore file
+├── README.md           # This file
+└── SETUP.md            # Detailed setup guide
+```
+
+## 🔌 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login user
+- `POST /api/auth/logout` - Logout user
+- `GET /api/auth/me` - Get current user
+
+### Todos (Protected)
+- `GET /api/todos` - Get all user's todos
+- `POST /api/todos` - Save/update todos
+- `PUT /api/todos/settings` - Update settings
+- `DELETE /api/todos` - Delete all todos
+
+## 🛠️ Troubleshooting
+
+### MongoDB Connection Issues
+- Make sure MongoDB is running (local) or connection string is correct (Atlas)
+- Check firewall and network settings
+- Verify credentials in `.env`
+
+### Port Already in Use
+- Change `PORT` in `.env` to a different port (e.g., 3001)
+
+### Cannot Find Module
+- Run `npm install` to install dependencies
+
+See [SETUP.md](SETUP.md) for more troubleshooting tips.
+
+## 🚀 Deployment
+
+### Deploy to Railway (Recommended)
+
+This app is configured for easy deployment to [Railway](https://railway.app/).
+
+#### Prerequisites
+1. **MongoDB Atlas Account** - Create a free account at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
+2. **GitHub Account** - Push your code to a GitHub repository
+3. **Railway Account** - Sign up at [railway.app](https://railway.app/)
+
+#### Step-by-Step Railway Deployment
+
+1. **Prepare MongoDB Atlas**
+   - Create a new cluster (free tier is fine)
+   - Create a database user with username and password
+   - Get your connection string (should look like: `mongodb+srv://username:password@cluster.mongodb.net/todolist`)
+   - **Important:** In Network Access, allow access from anywhere (0.0.0.0/0) for Railway
+
+2. **Push to GitHub**
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git remote add origin YOUR_GITHUB_REPO_URL
+   git push -u origin main
+   ```
+
+3. **Deploy on Railway**
+   - Go to [railway.app](https://railway.app/) and login
+   - Click "New Project" → "Deploy from GitHub repo"
+   - Select your repository
+   - Railway will automatically detect the Node.js app
+
+4. **Configure Environment Variables**
+   
+   In Railway dashboard, go to your project → Variables tab and add:
+   
+   | Variable | Value |
+   |----------|-------|
+   | `MONGODB_URI` | Your MongoDB Atlas connection string |
+   | `JWT_SECRET` | A random secret key (generate one!) |
+   | `NODE_ENV` | `production` |
+   
+   **Example:**
+   ```
+   MONGODB_URI=mongodb+srv://myuser:mypassword@cluster0.xxxxx.mongodb.net/todolist
+   JWT_SECRET=use_a_random_string_here_at_least_32_chars
+   NODE_ENV=production
+   ```
+
+5. **Deploy!**
+   - Railway will automatically build and deploy your app
+   - Once deployed, click on the generated URL to access your app
+   - You can also add a custom domain in Railway settings
+
+#### Automatic Deployments
+- Every time you push to your GitHub repo, Railway will automatically redeploy
+- No manual deployment needed!
+
+### Deploy to Other Platforms
+
+This app can also be deployed to:
+- **Heroku**: Similar process, use Heroku dashboard to set environment variables
+- **Render**: Connect GitHub repo and set environment variables
+- **DigitalOcean App Platform**: Deploy from GitHub with environment variables
+- **Vercel/Netlify**: Backend only (these are primarily for frontend)
+
+**General Requirements:**
+1. Set up a production MongoDB database (MongoDB Atlas recommended)
+2. Set all required environment variables on your hosting platform
+3. Ensure `NODE_ENV=production` is set
+4. The app uses `process.env.PORT` which works with most platforms
+
+## 📝 License
+
+This project is open source and available for personal and commercial use.
+
+## 🤝 Contributing
+
+Feel free to fork this project and submit pull requests with improvements!
+
+---
+
+Made with ❤️ using Node.js, Express, and MongoDB
