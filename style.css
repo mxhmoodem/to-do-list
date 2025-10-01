@@ -1387,10 +1387,10 @@ body.dark .settings-header {
   background: rgba(255, 255, 255, 0.2);
   color: var(--white);
   border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   transition: background 0.2s ease;
 }
 

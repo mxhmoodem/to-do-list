@@ -35,8 +35,6 @@
       console.log('Token invalid, redirecting to login...');
       localStorage.clear();
       window.location.replace('/');
-    } else {
-      console.log('✅ Authenticated as:', data.user.username);
     }
   })
   .catch(error => {
@@ -287,21 +285,28 @@ function displayCurrentDate() {
 function updateSidebarList() {
   const listOfListsDiv = document.getElementById("list-of-lists");
   listOfListsDiv.innerHTML = "";
-  let lists = [];
 
-  const savedLists = localStorage.getItem("todoLists");
-  if (savedLists) {
-    lists = JSON.parse(savedLists);
+  const container = document.querySelector(".container");
+  const todoApps = container ? container.querySelectorAll(".todo-app") : [];
+  const titles = [];
+
+  todoApps.forEach((app) => {
+    const titleEl = app.querySelector("h2");
+    if (titleEl && titleEl.innerText) {
+      titles.push(titleEl.innerText);
+    }
+  });
+
+  if (titles.length === 0) {
+    const defaultTitleEl = document.querySelector(".todo-app h2");
+    if (defaultTitleEl && defaultTitleEl.innerText) {
+      titles.push(defaultTitleEl.innerText);
+    }
   }
 
-  if (lists.length === 0) {
-    const defaultTitle = document.querySelector(".todo-app h2").innerText;
-    lists.push({ title: defaultTitle });
-  }
-
-  lists.forEach((list) => {
+  titles.forEach((title) => {
     const listItem = document.createElement("div");
-    listItem.textContent = list.title;
+    listItem.textContent = title;
     listItem.classList.add("sidebar-list-item");
     listOfListsDiv.appendChild(listItem);
   });
